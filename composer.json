@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Tealium_Tags",
+    "type": "magento-module",
+    "license": "OSL-v3.0",
+    "homepage": "",
+    "description": "Tealum tag management solution",
+    "authors": [
+    {
+        "name": "Tealium",
+        "email": "adam.corey@tealium.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

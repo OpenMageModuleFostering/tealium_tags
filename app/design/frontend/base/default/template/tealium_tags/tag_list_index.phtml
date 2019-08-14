@@ -1,0 +1,30 @@
+<?php
+
+$helper = Mage::helper('tealium_tags');
+$store = Mage::app()->getStore();
+
+if (!$helper->isEnabled($store)) {
+    return; // not enabled, no javascript inserted
+}
+
+$tags = array();
+
+if( sizeof($this->getTags()) > 0 ) {
+    foreach ($this->getTags()as $name => $tag) {
+        $tags[] = $name;
+    }
+} else {
+    $tags[] = "no-tags";
+}
+?>
+
+<!-- Tealium Tag List page javascript -->
+<script type="text/javascript">
+    var utag_data={
+        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
+        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
+        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
+        page_type: "tag list",
+        search_keyword: ["<?php echo implode('","', $tags) ?>"]
+    };
+</script>

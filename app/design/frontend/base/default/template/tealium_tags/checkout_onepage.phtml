@@ -1,0 +1,41 @@
+<?php
+
+$helper = Mage::helper('tealium_tags');
+$store = Mage::app()->getStore();
+
+if (!$helper->isEnabled($store)) {
+    return; // not enabled, no javascript inserted
+}
+
+$quote = Mage::helper('checkout')->getQuote();
+
+$ids = array();
+$skus = array();
+$names = array();
+$qtys = array();
+$prices = array();
+
+foreach ($quote->getAllVisibleItems() as $item) {
+    $ids[] = $item->getProductId();
+    $skus[] = $item->getSku();
+    $names[] = $item->getName();
+    $qtys[] = number_format($item->getQty(),0);
+    $prices[] = number_format($item->getPrice(),2);
+}
+
+?>
+
+<!-- Tealium Checkout javascript -->
+<script type="text/javascript">
+    var utag_data={
+        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
+        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
+        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
+        page_type: "checkout",
+        product_id: ["<?php echo implode('","', $ids) ?>"],
+        product_sku: ["<?php echo implode('","', $skus) ?>"],
+        product_name: ["<?php echo implode('","', $names) ?>"],
+        product_quantity: ["<?php echo implode('","', $qtys) ?>"],
+        product_list_price: ["<?php echo implode('","', $prices) ?>"]
+    };
+</script>

@@ -1,0 +1,74 @@
+<?php
+
+$helper = Mage::helper('tealium_tags');
+$store = Mage::app()->getStore();
+
+if (!$helper->isEnabled($store)) {
+    return; // not enabled, no javascript inserted
+}
+
+$order = Mage::getModel('sales/order')->loadByIncrementId($this->getOrderId());
+
+$ids = array();
+$skus = array();
+$names = array();
+$qtys = array();
+$prices = array();
+$discounts = array();
+$discount_quantity = array();
+
+foreach($order->getAllVisibleItems() as $item) {
+
+    $ids[] = $item->getProductId();
+    $skus[] = $item->getSku();
+    $names[] = $item->getName();
+    $qtys[] = number_format($item->getQtyOrdered(),0);
+    $prices[] = number_format($item->getPrice(),2);
+    $discount = number_format($item->getDiscountAmount(),2);
+    $discounts[] = $discount;
+    $applied_rules = explode(",", $item->getAppliedRuleIds());
+    $discount_object = array();
+    foreach ($applied_rules as $rule) {
+    	$quantity = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountQty(),0);
+    	$amount = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountAmount(),2);
+    	$type = Mage::getModel('salesrule/rule')->load($rule)->getSimpleAction();
+        $discount_object[] = "{\"rule\":\"$rule\",\"quantity\":\"$quantity\",\"amount\":\"$amount\",\"$type\"}";
+        echo "<!--"; echo print_r(Mage::getModel('salesrule/rule')->load($rule)->getData()); echo "-->";
+    }
+	$discount_quantity[] = "{\"product_id\":\"" . $item->getProductId() . 
+		"\",\"total_discount\":\"" . $discount . 
+		"\", \"discounts\":[" . implode(",",$discount_object) . "]}";
+
+}
+
+?>
+
+<!-- Tealium Checkout Success javascript -->
+<script type="text/javascript">
+    var utag_data={
+        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
+        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
+        page_name: "cart success",
+        page_type: "cart",
+        product_discount: ["<?php echo implode('","', $discounts) ?>"];
+        product_discounts: [<?php echo implode(",", $discount_quantity) ?>],
+        product_id: ["<?php echo implode('","', $ids) ?>"],
+        product_sku: ["<?php echo implode('","', $skus) ?>"],
+        product_name: ["<?php echo implode('","', $names) ?>"],
+        product_quantity: ["<?php echo implode('","', $qtys) ?>"],
+        product_list_price: ["<?php echo implode('","', $prices) ?>"],
+        order_id: "<?php echo $order->getIncrementId(); ?>",
+        order_subtotal: "<?php echo number_format($order->getSubtotal(),2); ?>",
+        order_payment_type: "<?php echo $order->getPayment() ? $order->getPayment()->getMethodInstance()->getTitle() : 'unknown'; ?>",
+        order_total: "<?php echo number_format($order->getGrandTotal(),2); ?>",
+        customer_email: "<?php echo $order->getCustomerEmail(); ?>",
+        order_discount: "<?php echo number_format($order->getDiscountAmount(),2); ?>",
+        order_shipping: "<?php echo number_format($order->getShippingAmount(),2); ?>",
+        order_tax: "<?php echo number_format($order->getTaxAmount(),2); ?>",
+        order_currency: "<?php echo number_format($order->getOrderCurrencyCode(),2); ?>"
+    };
+</script>
+
+
+
+

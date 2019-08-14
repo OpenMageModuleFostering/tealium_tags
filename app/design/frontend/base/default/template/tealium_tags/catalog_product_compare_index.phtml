@@ -1,0 +1,32 @@
+<?php
+
+$helper = Mage::helper('tealium_tags');
+$store = Mage::app()->getStore();
+
+if (!$helper->isEnabled($store)) {
+    return; // not enabled, no javascript inserted
+}
+
+$ids = array();
+$skus = array();
+$names = array();
+
+foreach($this->getItems() as $item) {
+    $ids[] = $item->getProductId();
+    $skus[] = $item->getSku();
+    $names[] = $item->getName();
+}
+?>
+
+<!-- Tealium Product Compare javascript -->
+<script type="text/javascript">
+    var utag_data={
+        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
+        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
+        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
+        page_type: "product compare",
+        product_id: ["<?php echo implode('","', $ids) ?>"],
+        product_sku: ["<?php echo implode('","', $skus) ?>"],
+        product_name: ["<?php echo implode('","', $names) ?>"]
+    };
+</script>

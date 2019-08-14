@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+    <name>Tealium_Tags</name>
+    <version>0.4.1</version>
+    <stability>stable</stability>
+    <license uri="http://opensource.org/licenses/osl-3.0.php">OSL v3.0</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>Tealum tag management solution</summary>
+    <description>Tealum tag management solution extension injects the Tealium javascript into your magento pages, and on specific pages injects special javascript so that you can access specific data elements such as product, category or cart data.</description>
+    <notes>0.4.1 - added simple discount array&#xD;
+0.4.0 - fix for individual discounts and number formats&#xD;
+0.3.1 - fix for configurable product arrays&#xD;
+0.3.0 - fix for missing support message&#xD;
+0.2.0 - fix for product page tag syntax&#xD;
+0.1.0 - initial release</notes>
+    <authors><author><name>Tealium</name><user>Tealium</user><email>adam.corey@tealium.com</email></author></authors>
+    <date>2013-09-13</date>
+    <time>22:18:01</time>
+    <contents><target name="magelocal"><dir name="Tealium"><dir name="Tags"><dir name="Helper"><file name="Data.php" hash="13a0233e34f932751381744f835f9a1d"/></dir><dir name="etc"><file name="adminhtml.xml" hash="e6ec5ba973cdb97a9925f02575392865"/><file name="config.xml" hash="c736b55d5e3cc05cbf7bc27fe7a851e5"/><file name="system.xml" hash="417e95d1e84d9fc2f6d1886d308501b8"/></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="Tealium_Tags.xml" hash="3d6843433dffefb4600573950a83e765"/></dir></target><target name="magedesign"><dir name="frontend"><dir name="base"><dir name="default"><dir name="layout"><file name="tealium_tags.xml" hash="8cc1b6255886de56c9a31ee63524f618"/></dir><dir name="template"><dir name="tealium_tags"><file name="base.phtml" hash="f09cb5b4e9b123e733e18164fe046673"/><file name="catalog_product_compare_index.phtml" hash="9383606f64e5a5918a42dade26427b82"/><file name="catalogsearch_advanced_result_index.phtml" hash="ae59d3320276e4b8697811317d913400"/><file name="catalogsearch_result_index.phtml" hash="de8a77ac81f67d05d24a174caebf5d7f"/><file name="catalogsearch_term_popular.phtml" hash="a181fe2776e1accee8b6ccb5fce43e89"/><file name="category.phtml" hash="54a9cf9d39d812fde48250dba5ff3b03"/><file name="checkout_cart_index.phtml" hash="7a141153bf2541c8773c9e02d8adedb9"/><file name="checkout_onepage.phtml" hash="c4e3f8a6f58ec14ee9af6bdcf12799c5"/><file name="checkout_success.phtml" hash="ed9eb993097d70b771b0c2fd5f5f7b0c"/><file name="cms.phtml" hash="01f737af394efe30f12747898c180e04"/><file name="customer.phtml" hash="6c31ee97cab35adfcc8467df0d099d47"/><file name="generic.phtml" hash="9581dfa0fa958b71e5e01391860ec2b7"/><file name="guest_sales.phtml" hash="727f38f359cf83d979cf83ef71fe75a5"/><file name="product.phtml" hash="0232bd6498afc204a26796bfc0f0e23f"/><file name="product_send.phtml" hash="5fef383640350706dbe195775c6cb6cc"/><file name="seo.phtml" hash="45d794ab2ce0bf3a9c7568203d3106e7"/><file name="tag_list_index.phtml" hash="a62362c42fc1639c63e7b940b13d4119"/><file name="tag_product_list.phtml" hash="c555519f13540a7cd68966ee0770d85d"/></dir></dir></dir></dir></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.1.0</min><max>6.0.0</max></php></required></dependencies>
+</package>

@@ -1,0 +1,20 @@
+<?php
+
+$helper = Mage::helper('tealium_tags');
+$store = Mage::app()->getStore();
+
+if (!$helper->isEnabled($store)) {
+    return; // not enabled, no javascript inserted
+}
+
+?>
+
+<!-- Tealium CMS page javascript -->
+<script type="text/javascript">
+    var utag_data={
+        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
+        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
+        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
+        page_type: "<?php echo $this->getTealiumType(); ?>"
+    };
+</script>
