@@ -3,7 +3,8 @@
 // Replace $STRING or $ARRAY with your server side variable reference unique to that key 
 $store = $data["store"];
 $page  = $data["page"];
-
+$STRING = "";
+$ARRAY = array();
 
 //define variables from magento *************************************************************************
 $customer_id       = "n/a";

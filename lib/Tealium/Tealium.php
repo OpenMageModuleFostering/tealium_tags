@@ -1,4 +1,6 @@
 <?php // Tealium.php Class file
+
+
 // This interface describes the methods available for the class object and usage
 interface TealiumInterface {
 		public function updateUdo($objectOrKey, $value);
@@ -26,7 +28,8 @@ interface TealiumInterface {
 class Tealium implements TealiumInterface
 
 {
-		private $account, $profile, $target, $udo, $access;
+
+		private $account, $profile, $target, $udo, $access, $udoElements;
 		public function __construct($accountInit = false, $profileInit = false, $targetInit = false, $pageType = "Home", $data = array(
 )) {
 				$this->access = array(
