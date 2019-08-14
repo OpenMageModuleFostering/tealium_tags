@@ -23,16 +23,16 @@ if (empty($terms)) {
     $terms[] = "no-criteria";
 }
 
-?>
+$udo = array(
+        page_name => "advanced search results",
+        page_type => "advanced search",
+        search_results => $this->getResultCount(),
+        search_keyword => implode('","', $terms)
+);
 
-<!-- Tealium Search Results page javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "advanced search results",
-        page_type: "advanced search",
-        search_results: "<?php echo $this->getResultCount(); ?>",
-        search_keyword: ["<?php echo implode('","', $terms) ?>"]
-    };
-</script>
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Search");
+$tealium->updateUdo($udo);
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
+?>

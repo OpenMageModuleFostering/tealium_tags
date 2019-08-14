@@ -1,18 +1,12 @@
 <?php
 $helper = Mage::helper('tealium_tags');
 $store = Mage::app()->getStore();
+//$tealium = new $helper($store);
 
 if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
-?>
 
-<!-- Tealium Base javascript -->
-<script type="text/javascript">
-    (function(a,b,c,d){
-      a='<?php echo $helper->getTealiumBaseUrl($store); ?>';
-      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.
-            async=true;
-        a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
-    })();
-</script>
+$tealium = $helper->getTealiumObject($store, $this);
+echo $tealium->render("tag");
+?>

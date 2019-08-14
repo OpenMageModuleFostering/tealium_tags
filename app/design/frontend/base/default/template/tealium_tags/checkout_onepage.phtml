@@ -7,35 +7,31 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
-$quote = Mage::helper('checkout')->getQuote();
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Cart");
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
+$jsonUDO = $tealium->render("json");
 
-$ids = array();
-$skus = array();
-$names = array();
-$qtys = array();
-$prices = array();
+echo <<<EOD
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',function(){
+	Checkout.prototype.gotoSection = function(section) {
+		utag.data=$jsonUDO;
+		utag.data["page_name"] = section;
+		utag.view(utag.data);
+		section = $('opc-'+section);
+		section.addClassName('allow');
+		this.accordion.openSection(section)
+	}
+});
+</script>
 
-foreach ($quote->getAllVisibleItems() as $item) {
-    $ids[] = $item->getProductId();
-    $skus[] = $item->getSku();
-    $names[] = $item->getName();
-    $qtys[] = number_format($item->getQty(),0,".","");
-    $prices[] = number_format($item->getPrice(),2,".","");
-}
-
+EOD
 ?>
 
-<!-- Tealium Checkout javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
-        page_type: "checkout",
-        product_id: ["<?php echo implode('","', $ids) ?>"],
-        product_sku: ["<?php echo implode('","', $skus) ?>"],
-        product_name: ["<?php echo implode('","', $names) ?>"],
-        product_quantity: ["<?php echo implode('","', $qtys) ?>"],
-        product_list_price: ["<?php echo implode('","', $prices) ?>"]
-    };
-</script>
+<script type="text/javascript"> 
+document.addEventListener('DOMContentLoaded',function(){
+	review = new Review('<?php echo $this->getUrl('checkout/onepage/saveOrder', array('form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>', '<?php echo $this->getUrl('checkout/onepage/success') ?>', $('checkout-agreements')); 
+});
+</script> 

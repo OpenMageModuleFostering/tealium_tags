@@ -16,15 +16,12 @@ if( sizeof($this->getTags()) > 0 ) {
 } else {
     $tags[] = "no-tags";
 }
-?>
 
-<!-- Tealium Tag List page javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
-        page_type: "tag list",
-        search_keyword: ["<?php echo implode('","', $tags) ?>"]
-    };
-</script>
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Search");
+$tealium->updateUdo("page_type", "tag list");
+$tealium->updateUdo("page_name", $this->getLayout()->getBlock('head')->getTitle());
+$tealium->updateUdo("search_keyword", $implode('","', $tags));
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
+?>

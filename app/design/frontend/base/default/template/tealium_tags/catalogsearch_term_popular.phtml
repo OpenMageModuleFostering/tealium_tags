@@ -16,15 +16,13 @@ if( sizeof($this->getTerms()) > 0 ) {
 } else {
     $terms[] = "no-terms";
 }
-?>
 
-<!-- Tealium Popular Search terms page javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
-        page_type: "popular search terms",
-        search_keyword: ["<?php echo implode('","', $terms) ?>"]
-    };
-</script>
+
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Search");
+$tealium->updateUdo("page_type", "popular search terms");
+$tealium->updateUdo("page_name", $this->getLayout()->getBlock('head')->getTitle());
+$tealium->updateUdo("search_keyword", $implode('","', $terms));
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
+?>

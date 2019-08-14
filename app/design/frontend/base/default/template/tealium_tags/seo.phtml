@@ -7,14 +7,8 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Home");
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
 ?>
-
-<!-- Tealium SEO page javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
-        page_type: "<?php echo $this->getTealiumType(); ?>"
-    };
-</script>

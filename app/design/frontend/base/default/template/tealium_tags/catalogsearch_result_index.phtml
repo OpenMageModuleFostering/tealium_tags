@@ -7,16 +7,8 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Search");
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
 ?>
-
-<!-- Tealium Search Results page javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "search results",
-        page_type: "search",
-        search_results: "<?php echo $this->getResultCount(); ?>",
-        search_keyword: ["<?php echo $this->helper('catalogsearch')->getEscapedQueryText(); ?>"]
-    };
-</script>

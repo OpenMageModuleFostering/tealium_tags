@@ -16,17 +16,18 @@ foreach($this->getItems() as $item) {
     $skus[] = $item->getSku();
     $names[] = $item->getName();
 }
-?>
 
-<!-- Tealium Product Compare javascript -->
-<script type="text/javascript">
-    var utag_data={
-        site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-        site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-        page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
-        page_type: "product compare",
-        product_id: ["<?php echo implode('","', $ids) ?>"],
-        product_sku: ["<?php echo implode('","', $skus) ?>"],
-        product_name: ["<?php echo implode('","', $names) ?>"]
-    };
-</script>
+$udo = array(
+        page_type => "product compare",
+        product_id => implode('","', $ids),
+        product_sku => implode('","', $skus),
+        product_name => implode('","', $names)
+);
+
+		
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Home");
+$tealium->updateUdo($udo);
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
+?>

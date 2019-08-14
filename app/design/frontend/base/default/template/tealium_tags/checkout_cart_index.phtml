@@ -7,35 +7,8 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
-$quote = Mage::helper('checkout')->getQuote();
-
-$ids = array();
-$skus = array();
-$names = array();
-$qtys = array();
-$prices = array();
-
-foreach ($quote->getAllVisibleItems() as $item) {
-    $ids[] = $item->getProductId();
-    $skus[] = $item->getSku();
-    $names[] = $item->getName();
-    $qtys[] = number_format($item->getQty(),0,".","");
-    $prices[] = number_format($item->getPrice(),2,".","");
-}
-
+$tealium = $helper->getTealiumObject($store, $this);
+$tealium->pageType("Cart");
+echo $tealium->render("udo");
+echo $helper->getDiagnosticTag($store);
 ?>
-
-<!-- Tealium Checkout_Cart javascript -->
-<script type="text/javascript">
-    var utag_data={
-            site_region: "<?php echo Mage::app()->getLocale()->getLocaleCode(); ?>",
-            site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
-            page_name: "cart index",
-            page_type: "cart",
-            product_id: ["<?php echo implode('","', $ids) ?>"],
-            product_sku: ["<?php echo implode('","', $skus) ?>"],
-            product_name: ["<?php echo implode('","', $names) ?>"],
-            product_quantity: ["<?php echo implode('","', $qtys) ?>"],
-            product_list_price: ["<?php echo implode('","', $prices) ?>"]
-    };
-</script>

@@ -385,4 +385,5 @@
             <block type="core/template" name="tealium_generic" as="tealium_generic" template="tealium_tags/generic.phtml" before="tealium_base" />
         </reference>
     </default>
+	
 </layout>
