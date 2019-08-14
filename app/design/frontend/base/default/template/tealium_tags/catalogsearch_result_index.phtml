@@ -17,6 +17,6 @@ if (!$helper->isEnabled($store)) {
         page_name: "search results",
         page_type: "search",
         search_results: "<?php echo $this->getResultCount(); ?>",
-        search_keyword: "<?php echo $this->helper('catalogsearch')->getEscapedQueryText(); ?>"
+        search_keyword: ["<?php echo $this->helper('catalogsearch')->getEscapedQueryText(); ?>"]
     };
 </script>

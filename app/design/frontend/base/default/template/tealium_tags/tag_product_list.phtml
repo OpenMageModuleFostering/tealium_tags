@@ -17,6 +17,6 @@ if (!$helper->isEnabled($store)) {
         page_name: "<?php echo $this->getLayout()->getBlock('head')->getTitle(); ?>",
         page_type: "tag product list",
         search_results: "<?php echo $this->getResultCount(); ?>",
-        search_keyword: "<?php echo $this->getTag()->getName(); ?>"
+        search_keyword: ["<?php echo $this->getTag()->getName(); ?>"]
     };
 </script>

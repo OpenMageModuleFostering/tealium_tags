@@ -26,7 +26,7 @@ $_category = Mage::getModel('catalog/category')->load($_category_id);;
             product_name: ["<?php echo $_product->getName(); ?>"],
             product_brand: ["<?php echo $_product->getBrand(); ?>"],
             product_category: ["<?php echo $_category ? $_category->getName() : 'no_category'; ?>"],
-            <?php if ($_product->getSpecialPrice()!='') echo 'product_unit_price: ["'.number_format($_product->getSpecialPrice(),2) .'"],'; ?>
-            product_list_price: ["<?php echo number_format($_product->getPrice(),2); ?>"]
+            <?php if ($_product->getSpecialPrice()!='') echo 'product_unit_price: ["'.number_format($_product->getSpecialPrice(),2,".","") .'"],'; ?>
+            product_list_price: ["<?php echo number_format($_product->getPrice(),2,".",""); ?>"]
     };
 </script>

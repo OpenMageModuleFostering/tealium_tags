@@ -19,8 +19,8 @@ foreach ($quote->getAllVisibleItems() as $item) {
     $ids[] = $item->getProductId();
     $skus[] = $item->getSku();
     $names[] = $item->getName();
-    $qtys[] = number_format($item->getQty(),0);
-    $prices[] = number_format($item->getPrice(),2);
+    $qtys[] = number_format($item->getQty(),0,".","");
+    $prices[] = number_format($item->getPrice(),2,".","");
 }
 
 ?>
