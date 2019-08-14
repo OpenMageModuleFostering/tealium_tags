@@ -40,6 +40,18 @@
                                <show_in_website>1</show_in_website>
                                <show_in_store>1</show_in_store>
                            </enable>
+						   <onepage translate="label">
+                               <label>Enable OnePage Checkout</label>
+								<comment>
+						   			<![CDATA[<span class="notice">Enable/Disable OnePage Checkout Support</span>]]> 
+								</comment>
+                               <frontend_type>select</frontend_type>
+                               <source_model>adminhtml/system_config_source_yesno</source_model>
+                               <sort_order>2</sort_order>
+                               <show_in_default>1</show_in_default>
+                               <show_in_website>1</show_in_website>
+                               <show_in_store>1</show_in_store>
+                           </onepage>
                            <account translate="label">
                                <label>Account</label>
 							   	<comment>
@@ -100,32 +112,130 @@
 									<div style="display:none; background-color:#000; color:#0F0" id="code_example"> 
 									<pre>
 &lt;?php
-// TealiumInit.php var definition file
-// Replace $STRING or $ARRAY with your server side variable reference unique to that key 
-$store = $data[&quot;store&quot;];
-$page  = $data[&quot;page&quot;];
+// TealiumExtendData use this to override or extend default values proivided by the Tealium module
+
+class TealiumExtendData {
+	private static $store;
+	private static $page;
+	
+	public static function setStore($store){
+		TealiumExtendData::$store = $store;
+	}
+	
+	public static function setPage($page){
+		TealiumExtendData::$page = $page;
+	}
+	
+	public function getHome(){
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+		
+		return $outputArray;
+	}
+	
+	public function getSearch(){
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+
+		return $outputArray;
+	}
+	
+	public function getCategory(){
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+		
+		return $outputArray;
+	}
+	
+	public function getProductPage(){
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+		// make sure any product values are in an array
+		
+		return $outputArray;
+	}
+	
+	public function getCartPage() {
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+		// make sure any product values are in an array
+		
+		return $outputArray;
+	}
+	
+	public function getOrderConfirmation(){
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+		// make sure any product values are in an array
+		
+		return  $outputArray;
+	}
+	
+	public function getCustomerData(){
+		$store = TealiumExtendData::$store;
+		$page = TealiumExtendData::$page;
+		
+		$outputArray = array();
+		//$outputArray[&quot;custom_key&quot;] = "value";
+		
+		return $outputArray;
+	}
+}
+
+
+TealiumExtendData::setStore($data["store"]);
+TealiumExtendData::setPage($data["page"]);
 
 
 $udoElements = array(
-    Home =&gt; array(
-		foo 		=&gt; &quot;bar&quot;,
-		test		=&gt; &quot;var&quot;,
-		site_region =&gt; &quot;modified: &quot; . Mage::app()-&gt;getLocale()-&gt;getLocaleCode() ?: 
-		&quot;&quot;, //&quot;uk&quot;,
-    ),
-    Search =&gt; array(
-    ),
-    Category =&gt; array(
-    ),
-    ProductPage =&gt; array(
-    ),
-    Cart =&gt; array(
-    ),
-    Confirmation =&gt; array(
-    ),
-    Customer =&gt; array(
-    )
+    &quot;Home&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getHome();
+    },
+    &quot;Search&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getSearch();
+    },
+    &quot;Category&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getCategory();
+    },
+    &quot;ProductPage&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getProductPage();
+    },
+    &quot;Cart&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getCartPage();
+    },
+    &quot;Confirmation&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getOrderConfirmation();
+    },
+    &quot;Customer&quot; =&gt; function(){
+    	$tealiumData = new TealiumExtendData();
+    	return $tealiumData-&gt;getCustomerData();
+    }
 );
+
 
 ?&gt; 
 									</pre>
@@ -140,11 +250,39 @@ $udoElements = array(
                                <show_in_website>1</show_in_website>
                                <show_in_store>1</show_in_store>
                            </udo>
-						   <diagnostic_enable translate="label">
-                               <label>Enable Diagnostic Tag</label>
+                           <external_script translate="label">
+                               <label>Enable External Script Support</label>
+								<comment>
+						   			<![CDATA[<span class="notice">Place Tealium code in external javaScript file<br/>
+						   			*NOTE Order confirmation page will always load script on page
+						   			</span>]]> 
+								</comment>
                                <frontend_type>select</frontend_type>
                                <source_model>adminhtml/system_config_source_yesno</source_model>
                                <sort_order>17</sort_order>
+                               <show_in_default>1</show_in_default>
+                               <show_in_website>1</show_in_website>
+                               <show_in_store>1</show_in_store>
+                           </external_script>
+                           <external_script_type translate="label">
+                               <label>External Script Async</label>
+								<comment>
+						   			<![CDATA[<span class="notice">Enable async loading of the external script<br />
+						   			!WARNING! By enabling, we can't gaurantee all of your tags will fire before the user navigates away
+						   			</span>]]> 
+								</comment>
+                               <frontend_type>select</frontend_type>
+                               <source_model>adminhtml/system_config_source_yesno</source_model>
+                               <sort_order>18</sort_order>
+                               <show_in_default>1</show_in_default>
+                               <show_in_website>1</show_in_website>
+                               <show_in_store>1</show_in_store>
+                           </external_script_type>
+                           <diagnostic_enable translate="label">
+                               <label>Enable Diagnostic Tag</label>
+                               <frontend_type>select</frontend_type>
+                               <source_model>adminhtml/system_config_source_yesno</source_model>
+                               <sort_order>19</sort_order>
                                <show_in_default>1</show_in_default>
                                <show_in_website>1</show_in_website>
                                <show_in_store>1</show_in_store>
@@ -155,23 +293,11 @@ $udoElements = array(
 						   			<![CDATA[<span class="notice">Please contact your Account Manager for information about this feature</span>]]> 
 								</comment>
                                <frontend_type>text</frontend_type>
-                               <sort_order>18</sort_order>
+                               <sort_order>20</sort_order>
                                <show_in_default>1</show_in_default>
                                <show_in_website>1</show_in_website>
                                <show_in_store>1</show_in_store>
                            </diagnostic_tag>
-						   <api_enable translate="label">
-                               <label>Enable API support</label>
-								<comment>
-						   			<![CDATA[<span class="notice">Please contact your Account Manager for information about this feature</span>]]> 
-								</comment>
-                               <frontend_type>select</frontend_type>
-                               <source_model>adminhtml/system_config_source_yesno</source_model>
-                               <sort_order>19</sort_order>
-                               <show_in_default>1</show_in_default>
-                               <show_in_website>1</show_in_website>
-                               <show_in_store>1</show_in_store>
-                           </api_enable>
 						   <help translate="label">
                                <label>Help Section</label>
 							   <comment>
@@ -670,7 +796,7 @@ Copyright © 2014 Tealium, Inc. All rights reserved.</p></article>
 									]]> 
 								</comment>
                                <frontend_type>label</frontend_type>
-                               <sort_order>20</sort_order>
+                               <sort_order>30</sort_order>
                                <show_in_default>1</show_in_default>
                                <show_in_website>1</show_in_website>
                                <show_in_store>1</show_in_store>

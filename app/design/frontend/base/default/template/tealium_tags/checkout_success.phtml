@@ -7,8 +7,16 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
-$tealium = $helper->getTealiumObject($store, $this);
-$tealium->pageType("Confirmation");
-echo $tealium->render("udo");
+$tealium = $helper->init($store, $this, "Confirmation")->
+addCustomDataFromSetup($store, "Confirmation")->
+getTealiumObject();
+
+if ($helper->getIsExternalScript($store)){
+	echo $tealium->render("full", false);
+}
+else {
+	echo $tealium->render("udo");
+}
+
 echo $helper->getDiagnosticTag($store);
 ?>

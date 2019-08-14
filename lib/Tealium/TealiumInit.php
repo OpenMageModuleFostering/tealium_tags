@@ -1,241 +1,301 @@
 <?php
 // TealiumInit.php var definition file
 // Replace $STRING or $ARRAY with your server side variable reference unique to that key 
-$store = $data["store"];
-$page  = $data["page"];
-$STRING = "";
-$ARRAY = array();
 
-//define variables from magento *************************************************************************
-$customer_id       = "n/a";
-$customer_email    = "n/a";
-$customer_type     = "n/a";
-$ids               = array();
-$skus              = array();
-$names             = array();
-$qtys              = array();
-$prices            = array();
-$discounts         = array();
-$discount_quantity = array();
-$checkout_ids      = array();
-$checkout_skus     = array();
-$checkout_names    = array();
-$checkout_qtys     = array();
-$checkout_prices   = array();
-$section           = "n/a";
-$category          = "n/a";
-$subcategory       = "n/a";
-$_category         = null;
+class TealiumData {
+	private static $store;
+	private static $page;
+	
+	public static function setStore($store){
+		TealiumData::$store = $store;
+	}
+	
+	public static function setPage($page){
+		TealiumData::$page = $page;
+	}
+	
+	public function getHome(){
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		$outputArray = array();
+		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['page_name'] = $page->getLayout()->getBlock('head')->getTitle() ?: "";
+		$outputArray['page_type'] = $page->getTealiumType() ?: "";
+		
+		return $outputArray;
+	}
+	
+	public function getSearch(){
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		$outputArray = array();
+	    $outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+	    $outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: ""; 
+	    $outputArray['page_name'] = "search results";
+	    $outputArray['page_type'] = "search";
+	    $outputArray['search_results'] = $page->getResultCount() . "" ?: "";
+	    $outputArray['search_keyword'] = $page->helper('catalogsearch')->getEscapedQueryText() ?: "";
 
-if ($page->getCurrentCategory()) {
-    $_category   = $page->getCurrentCategory();
-    $parent      = false;
-    $grandparent = false;
-    
-    // check for parent and grandparent
-    if ($_category->getParentId()) {
-        $parent = Mage::getModel('catalog/category')->load($_category->getParentId());
-        
-        if ($parent->getParentId()) {
-            $grandparent = Mage::getModel('catalog/category')->load($parent->getParentId());
-        }
-    }
-    
-    // Set the section and subcategory with parent and grandparent
-    if ($grandparent) {
-        $section     = $grandparent->getName();
-        $category    = $parent->getName();
-        $subcategory = $_category->getName();
-    } elseif ($parent) {
-        $section  = $parent->getName();
-        $category = $_category->getName();
-    } else {
-        $category = $_category->getName();
-    }
+		return $outputArray;
+	}
+	
+	public function getCategory(){
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		if ($page->getCurrentCategory()) {
+			$_category   = $page->getCurrentCategory();
+			$parent      = false;
+			$grandparent = false;
+		
+			// check for parent and grandparent
+			if ($_category->getParentId()) {
+				$parent = Mage::getModel('catalog/category')->load($_category->getParentId());
+		
+				if ($parent->getParentId()) {
+					$grandparent = Mage::getModel('catalog/category')->load($parent->getParentId());
+				}
+			}
+		
+			// Set the section and subcategory with parent and grandparent
+			if ($grandparent) {
+				$section     = $grandparent->getName();
+				$category    = $parent->getName();
+				$subcategory = $_category->getName();
+			} elseif ($parent) {
+				$section  = $parent->getName();
+				$category = $_category->getName();
+			} else {
+				$category = $_category->getName();
+			}
+		}
+		
+		$outputArray = array();
+		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['page_name'] = $_category ? ($_category->getName() ?: "") : "";
+		$outputArray['page_type'] = "category";
+		$outputArray['page_section_name'] = $section ?: "";
+		$outputArray['page_category_name'] = $category ?: "";
+		$outputArray['page_subcategory_name'] = $subcategory ?: "";
+		
+		return $outputArray;
+	}
+	
+	public function getProductPage(){
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		$outputArray = array();
+		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['page_name'] = $_category ? ($_category->getName() ?: "") : "";
+		$outputArray['page_type'] = "product";
+		
+		// THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
+		if ( $page->getProduct() ) {
+			if ( !($outputArray['product_id'] = array( $page->getProduct()->getId() )) ){
+				$outputArray['product_id'] = array();
+			}
+			if ( !($outputArray['product_sku'] = array( $page->getProduct()->getSku() )) ){
+				$outputArray['product_sku'] = array();
+			}
+			if ( !($outputArray['product_name'] = array( $page->getProduct()->getName() )) ){
+				$outputArray['product_name'] = array();
+			}
+			if ( !($outputArray['product_brand'] = array( $page->getProduct()->getBrand() )) ){
+				$outputArray['product_brand'] = array();
+			}
+			if ( !($outputArray['product_unit_price'] = array( number_format($page->getProduct()->getSpecialPrice(), 2) )) ){
+				$outputArray['product_unit_price'] = array();
+			}
+			if ( !($outputArray['product_list_price'] = array( number_format($page->getProduct()->getPrice(), 2) )) ){
+				$outputArray['product_list_price'] = array();
+			}
+		}
+		else {
+			$outputArray['product_id'] = array();
+			$outputArray['product_sku'] = array();
+			$outputArray['product_name'] = array();
+			$outputArray['product_brand'] = array();
+			$outputArray['product_unit_price'] = array();
+			$outputArray['product_list_price'] = array();
+		}
+
+		if ( Mage::registry('current_category') ){
+			if ( Mage::registry('current_category')->getName() ){
+				$outputArray['product_category'] = array(Mage::registry('current_category')->getName());
+			}
+			else {
+				$outputArray['product_category'] = array();
+			}
+		}
+		else {
+			$outputArray['product_category'] = array();
+		}
+		
+		return $outputArray;
+	}
+	
+	public function getCartPage() {
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		if (Mage::helper('checkout')) {
+			$quote = Mage::helper('checkout')->getQuote();
+			foreach ($quote->getAllVisibleItems() as $item) {
+				$checkout_ids[]    = $item->getProductId();
+				$checkout_skus[]   = $item->getSku();
+				$checkout_names[]  = $item->getName();
+				$checkout_qtys[]   = number_format($item->getQty(), 0, ".", "");
+				$checkout_prices[] = number_format($item->getPrice(), 2, ".", "");
+			}
+		}
+		
+		$outputArray = array();
+		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['page_name'] = $page->getLayout()->getBlock('head')->getTitle() ?: "";
+		$outputArray['page_type'] = "checkout";
+
+		// THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
+		$outputArray['product_id'] = $checkout_ids ?: array();
+		$outputArray['product_sku'] = $checkout_skus ?: array();
+		$outputArray['product_name'] = $checkout_names ?: array();
+		$outputArray['product_brand'] = array();
+		$outputArray['product_category'] = array();
+		$outputArray['product_quantity'] = $checkout_qtys ?: array();
+		$outputArray['product_unit_price'] = array();
+		$outputArray['product_list_price'] = $checkout_prices ?: array();
+		
+		return $outputArray;
+	}
+	
+	public function getOrderConfirmation(){
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		if (Mage::getModel('sales/order')) {
+			$order = Mage::getModel('sales/order')->loadByIncrementId($page->getOrderId());
+			foreach ($order->getAllVisibleItems() as $item) {
+		
+				$ids[]           = $item->getProductId();
+				$skus[]          = $item->getSku();
+				$names[]         = $item->getName();
+				$qtys[]          = number_format($item->getQtyOrdered(), 0, ".", "");
+				$prices[]        = number_format($item->getPrice(), 2, ".", "");
+				$discount        = number_format($item->getDiscountAmount(), 2, ".", "");
+				$discounts[]     = $discount;
+				$applied_rules   = explode(",", $item->getAppliedRuleIds());
+				$discount_object = array();
+				foreach ($applied_rules as $rule) {
+					$quantity          = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountQty(), 0, ".", "");
+					$amount            = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountAmount(), 2, ".", "");
+					$type              = Mage::getModel('salesrule/rule')->load($rule)->getSimpleAction();
+					$discount_object[] = array("rule"		=>$rule,
+							"quantity"	=>$quantity,
+							"amount"	=>$amount,
+							"type"		=>$type);
+				}
+				$discount_quantity[] = array("product_id" => $item->getProductId(),
+						"total_discount"	=> $discount,
+						"discounts"		=> $discount_object);
+		
+			}
+		}
+		
+		$outputArray = array();
+
+		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['order_id'] = $order->getIncrementId() ?: "";
+		$outputArray['order_discount'] = number_format($order->getDiscountAmount(), 2, ".", "") ?: "";
+		$outputArray['order_subtotal'] = number_format($order->getSubtotal(), 2, ".", "") ?: "";
+		$outputArray['order_shipping'] = number_format($order->getShippingAmount(), 2, ".", "") ?: "";
+		$outputArray['order_tax'] = number_format($order->getTaxAmount(), 2, ".", "") ?: "";
+		$outputArray['order_payment_type'] = $order->getPayment() ? $order->getPayment()->getMethodInstance()->getTitle() : 'unknown';
+		$outputArray['order_total'] = number_format($order->getGrandTotal(), 2, ".", "") ?: "";
+		$outputArray['order_currency'] = $order->getOrderCurrencyCode() ?: "";
+		$outputArray['customer_email'] = $order->getCustomerEmail() ?: "";
+		$outputArray['product_id'] = $ids ?: array();
+		$outputArray['product_sku'] = $skus ?: array();
+		$outputArray['product_name'] = $names ?: array();
+		$outputArray['product_brand'] = array();
+		$outputArray['product_category'] = array();
+		$outputArray['product_unit_price'] = array();
+		$outputArray['product_list_price'] = $prices ?: array();
+		$outputArray['product_quantity'] = $qtys ?: array();
+		$outputArray['product_discount'] = $discounts ?: array();
+		$outputArray['product_discounts'] = $discount_quantity ?: array();
+		
+		return  $outputArray;
+	}
+	
+	public function getCustomerData(){
+		$store = TealiumData::$store;
+		$page = TealiumData::$page;
+		
+		if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+			$customer       = Mage::getSingleton('customer/session')->getCustomer();
+			$customer_id    = $customer->getEntityId();
+			$customer_email = $customer->getEmail();
+			$groupId        = $customer->getGroupId();
+			$customer_type  = Mage::getModel('customer/group')->load($groupId)->getCode();
+		}
+		
+		$outputArray = array();
+
+		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
+		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['page_name'] = $page->getLayout()->getBlock('head')->getTitle() ?: "";
+		$outputArray['page_type'] = $page->getTealiumType() ?: "";
+		$outputArray['customer_id'] = $customer_id ?: "";
+		$outputArray['customer_email'] = $customer_email ?: "";
+		$outputArray['customer_type'] = $customer_type ?: "";
+		
+		return $outputArray;
+	}
 }
 
-if (Mage::helper('checkout')) {
-    $quote = Mage::helper('checkout')->getQuote();
-    foreach ($quote->getAllVisibleItems() as $item) {
-        $checkout_ids[]    = $item->getProductId();
-        $checkout_skus[]   = $item->getSku();
-        $checkout_names[]  = $item->getName();
-        $checkout_qtys[]   = number_format($item->getQty(), 0, ".", "");
-        $checkout_prices[] = number_format($item->getPrice(), 2, ".", "");
-    }
-}
 
-if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-    $customer       = Mage::getSingleton('customer/session')->getCustomer();
-    $customer_id    = $customer->getEntityId();
-    $customer_email = $customer->getEmail();
-    $groupId        = $customer->getGroupId();
-    $customer_type  = Mage::getModel('customer/group')->load($groupId)->getCode();
-}
+TealiumData::setStore($data["store"]);
+TealiumData::setPage($data["page"]);
 
-if (Mage::getModel('sales/order')) {
-    $order = Mage::getModel('sales/order')->loadByIncrementId($page->getOrderId());
-    foreach ($order->getAllVisibleItems() as $item) {
-        
-        $ids[]           = $item->getProductId();
-        $skus[]          = $item->getSku();
-        $names[]         = $item->getName();
-        $qtys[]          = number_format($item->getQtyOrdered(), 0, ".", "");
-        $prices[]        = number_format($item->getPrice(), 2, ".", "");
-        $discount        = number_format($item->getDiscountAmount(), 2, ".", "");
-        $discounts[]     = $discount;
-        $applied_rules   = explode(",", $item->getAppliedRuleIds());
-        $discount_object = array();
-        foreach ($applied_rules as $rule) {
-            $quantity          = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountQty(), 0, ".", "");
-            $amount            = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountAmount(), 2, ".", "");
-            $type              = Mage::getModel('salesrule/rule')->load($rule)->getSimpleAction();
-            $discount_object[] = array("rule"		=>$rule,
-										"quantity"	=>$quantity,
-										"amount"	=>$amount,
-										"type"		=>$type);
-        }
-        $discount_quantity[] = array("product_id" => $item->getProductId(),
-									 "total_discount"	=> $discount,
-									 "discounts"		=> $discount_object);
-        
-    }
-}
-//**************************************************************************************************
 
 $udoElements = array(
-    'Home' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk"
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP"
-        'page_name' => $page->getLayout()->getBlock('head')->getTitle() ?: "", //"Home" 
-        'page_type' => $page->getTealiumType() ?: "" //"home"
-    ),
-    'Search' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk"
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP" 
-        'page_name' => "search results", //"results" 
-        'page_type' => "search", //"search"
-        'search_results' => $page->getResultCount() ?: "", //"234"
-        'search_keyword' => $page->helper('catalogsearch')->getEscapedQueryText() ?: "" //"shorts"
-    ),
-    'Category' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        'page_name' => $_category ? ($_category->getName() ?: "") : "", //"shorts", 
-        'page_type' => "category", //"category",
-        'page_section_name' => $section ?: "", //"Men's",
-        'page_category_name' => $category ?: "", //"Clothing",
-        'page_subcategory_name' => $subcategory ?: "" //"Shorts"
-    ),
-    'ProductPage' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        'page_name' => $page->getProduct() ? ($page->getProduct()->getName() ?: "") : "", //"Dr. Denim Chase Check Cargo Short", 
-        'page_type' => "product", //"product",
-        'page_section_name' => $STRING ?: "", //"Men's",
-        'page_category_name' => $STRING ?: "", //"Clothing",
-        'page_subcategory_name' => $STRING ?: "", //"Shorts",
-        // THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
-        'product_id' => $page->getProduct() ? (array(
-            $page->getProduct()->getId()
-        ) ?: array(
-            ""
-        )) : array(
-            ""
-        ), //array("5225415241111"),
-        'product_sku' => $page->getProduct() ? (array(
-            $page->getProduct()->getSku()
-        ) ?: array(
-            ""
-        )) : array(
-            ""
-        ), //array("42526"),
-        'product_name' => $page->getProduct() ? (array(
-            $page->getProduct()->getName()
-        ) ?: array(
-            ""
-        )) : array(
-            ""
-        ), //array("Dr. Denim Chase Check Cargo Short"),
-        'product_brand' => $page->getProduct() ? (array(
-            $page->getProduct()->getBrand()
-        ) ?: array(
-            ""
-        )) : array(
-            ""
-        ), //array("Dr. Denim"),
-        'product_category' => array(
-            Mage::registry('current_category') ? Mage::registry('current_category')->getName() : 'no_category'
-        ) ?: array(
-            ""
-        ), //array("Shorts"),
-        'product_unit_price' => $page->getProduct() ? (array(
-            number_format($page->getProduct()->getSpecialPrice(), 2)
-        ) ?: array(
-            ""
-        )) : array(
-            ""
-        ), //array("11.99"),
-        'product_list_price' => $page->getProduct() ? (array(
-            number_format($page->getProduct()->getPrice(), 2)
-        ) ?: array(
-            ""
-        )) : array(
-            ""
-        ) //array("59.00")
-    ),
-    'Cart' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        'page_name' => $page->getLayout()->getBlock('head')->getTitle() ?: "", //"cart", 
-        'page_type' => "checkout", //"checkout",
-        // THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
-        'product_id' => $checkout_ids ?: array(), //array("5225415241111","5421423520051"),
-        'product_sku' => $checkout_skus ?: array(), //array("42526","24672"),
-        'product_name' => $checkout_names ?: array(), //array("Dr. Denim Chase Check Cargo Short","Renewal Denim Shirt"),
-        'product_brand' => $ARRAY ?: array(), //array("Dr. Denim",""),
-        'product_category' => $ARRAY ?: array(), //array("Shorts","Shirts"),
-        'product_quantity' => $checkout_qtys ?: array(), //array("1","1"),
-        'product_unit_price' => $ARRAY ?: array(), //array("1//array("11.99","37.00"),
-        'product_list_price' => $checkout_prices ?: array() //array("59.00","")
-    ),
-    'Confirmation' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        'page_name' => "cart success", //"confirmation",    
-        'page_type' => "cart", //"checkout",
-        'order_id' => $order->getIncrementId() ?: "", //"12345678",
-        'order_discount' => number_format($order->getDiscountAmount(), 2, ".", "") ?: "", //"0.00",
-        'order_subtotal' => number_format($order->getSubtotal(), 2, ".", "") ?: "", //"70.99",
-        'order_shipping' => number_format($order->getShippingAmount(), 2, ".", "") ?: "", //"10.00",
-        'order_tax' => number_format($order->getTaxAmount(), 2, ".", "") ?: "", //"5.00",
-        'order_payment_type' => $order->getPayment() ? $order->getPayment()->getMethodInstance()->getTitle() : 'unknown', //"visa",
-        'order_total' => number_format($order->getGrandTotal(), 2, ".", "") ?: "", //"85.99",
-        'order_currency' => $order->getOrderCurrencyCode() ?: "", //"gbp",
-        'customer_id' => $customer_id ?: "", //"12345678",
-        'customer_email' => $order->getCustomerEmail() ?: "", //"customer@email.com"
-        // THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
-        'product_id' => $ids ?: array(), //array("5225415241111","5421423520051"),
-        'product_sku' => $skus ?: array(), //array("42526","24672"),
-        'product_name' => $names ?: array(), //array("Dr. Denim Chase Check Cargo Short","Renewal Denim Shirt"),
-        'product_brand' => $ARRAY ?: array(), //array("Dr. Denim",""),
-        'product_category' => $ARRAY ?: array(), //array("Shorts","Shirts"),
-        'product_unit_price' => $ARRAY ?: array(), //array("11.99","37.00"),
-        'product_list_price' => $prices ?: array(), //array("59.00",""),
-        'product_quantity' => $qtys ?: array(), //array("1","1"),
-        'product_discount' => $discounts ?: array(), //array("0.00","0.00"),
-        'product_discounts' => $discount_quantity ?: array()
-    ),
-    'Customer' => array(
-        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "",
-        'site_currency' => $store->getCurrentCurrencyCode() ?: "",
-        'page_name' => $page->getLayout()->getBlock('head')->getTitle() ?: "",
-        'page_type' => $page->getTealiumType() ?: "",
-        'customer_id' => $customer_id ?: "",
-        'customer_email' => $customer_email ?: "",
-        'customer_type' => $customer_type ?: ""
-    )
+    'Home' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getHome();
+    },
+    'Search' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getSearch();
+    },
+    'Category' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getCategory();
+    },
+    'ProductPage' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getProductPage();
+    },
+    'Cart' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getCartPage();
+    },
+    'Confirmation' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getOrderConfirmation();
+    },
+    'Customer' => function(){
+    	$tealiumData = new TealiumData();
+    	return $tealiumData->getCustomerData();
+    }
 );
+
 
 ?> 
 

@@ -7,9 +7,24 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
-$tealium = $helper->getTealiumObject($store, $this);
-$tealium->pageType("Home");
-$tealium->updateUdo("page_name", $this->getTealiumName());
-echo $tealium->render("udo");
+$customData = array();
+$customData["page_name"] = $this->getTealiumName();
+$tealium = $helper->init($store, $this, "Home")->
+			addCustomDataFromSetup($store, "Home")->
+			addCustomDataFromObject($customData)->
+			getTealiumObject();
+
+if ($helper->getIsExternalScript($store)){
+	$syncType = "sync";
+	$externalScriptType = $helper->getExternalScriptType($store);
+	if ($externalScriptType == "sync" || $externalScriptType == "async"){
+		$syncType = $externalScriptType;
+	}
+	echo $tealium->render("full", true, $syncType);
+}
+else {
+	echo $tealium->render("udo");
+}
+
 echo $helper->getDiagnosticTag($store);
 ?>

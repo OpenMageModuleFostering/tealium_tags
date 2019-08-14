@@ -17,11 +17,27 @@ if( sizeof($this->getTags()) > 0 ) {
     $tags[] = "no-tags";
 }
 
-$tealium = $helper->getTealiumObject($store, $this);
-$tealium->pageType("Search");
-$tealium->updateUdo("page_type", "tag list");
-$tealium->updateUdo("page_name", $this->getLayout()->getBlock('head')->getTitle());
-$tealium->updateUdo("search_keyword", $implode('","', $tags));
-echo $tealium->render("udo");
+$customData = array();
+$customData["page_type"] = "tag list";
+$customData["page_name"] = $this->getLayout()->getBlock('head')->getTitle();
+$customData["search_keyword"] = implode('","', $tags);
+
+$tealium = $helper->init($store, $this, "Search")->
+			addCustomDataFromSetup($store, "Search")->
+			addCustomDataFromObject($customData)->
+			getTealiumObject();
+
+if ($helper->getIsExternalScript($store)){
+	$syncType = "sync";
+	$externalScriptType = $helper->getExternalScriptType($store);
+	if ($externalScriptType == "sync" || $externalScriptType == "async"){
+		$syncType = $externalScriptType;
+	}
+	echo $tealium->render("full", true, $syncType);
+}
+else {
+	echo $tealium->render("udo");
+}
+
 echo $helper->getDiagnosticTag($store);
 ?>

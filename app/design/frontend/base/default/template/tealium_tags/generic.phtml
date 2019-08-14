@@ -9,12 +9,31 @@ if (!$helper->isEnabled($store)) {
 
 $tealium = $helper->getTealiumObject($store, $this);
 if(preg_match('/checkout.+success|success.+checkout/i',$_SERVER['PHP_SELF'])){
-	$tealium->pageType("Confirmation");
+	$tealium = $helper->init($store, $this, "Confirmation")->
+				addCustomDataFromSetup($store, "Confirmation")->
+				getTealiumObject();
 }
 else{
-	$tealium->pageType("Home");
-	$tealium->updateUdo("page_type","generic");
+	$customData = array();
+	$customData["page_type"] = "generic";
+	$tealium = $helper->init($store, $this, "Home")->
+				addCustomDataFromSetup($store, "Home")->
+				addCustomDataFromObject($customData)->
+				getTealiumObject();
+
 }
-echo $tealium->render("udo");
+
+if ($helper->getIsExternalScript($store)){
+	$syncType = "sync";
+	$externalScriptType = $helper->getExternalScriptType($store);
+	if ($externalScriptType == "sync" || $externalScriptType == "async"){
+		$syncType = $externalScriptType;
+	}
+	echo $tealium->render("full", true, $syncType);
+}
+else {
+	echo $tealium->render("udo");
+}
+
 echo $helper->getDiagnosticTag($store);
 ?>

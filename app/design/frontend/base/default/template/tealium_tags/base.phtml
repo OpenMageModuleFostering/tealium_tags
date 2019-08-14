@@ -6,6 +6,9 @@ $store = Mage::app()->getStore();
 if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
-$tealium = $helper->getTealiumObject($store, $this);
-echo $tealium->render("tag");
+if (!$helper->getIsExternalScript($store)){
+	$tealium = $helper->getTealiumObject($store, $this);
+	echo $tealium->render("tag");
+}
+
 ?>

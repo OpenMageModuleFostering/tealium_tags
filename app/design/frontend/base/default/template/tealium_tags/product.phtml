@@ -7,12 +7,21 @@ if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
-$_product = $this->getProduct();
-$_category = Mage::registry('current_category');
+$tealium = $helper->init($store, $this, "ProductPage")->
+			addCustomDataFromSetup($store, "ProductPage")->
+			getTealiumObject();
 
+if ($helper->getIsExternalScript($store)){
+	$syncType = "sync";
+	$externalScriptType = $helper->getExternalScriptType($store);
+	if ($externalScriptType == "sync" || $externalScriptType == "async"){
+		$syncType = $externalScriptType;
+	}
+	echo $tealium->render("full", true, $syncType);
+}
+else {
+	echo $tealium->render("udo");
+}
 
-$tealium = $helper->getTealiumObject($store, $this);
-$tealium->pageType("ProductPage");
-echo $tealium->render("udo");
 echo $helper->getDiagnosticTag($store);
 ?>
