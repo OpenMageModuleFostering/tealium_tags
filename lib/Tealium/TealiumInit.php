@@ -92,7 +92,7 @@ class TealiumData {
 		$outputArray = array();
 		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
 		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
-		$outputArray['page_name'] = $_category ? ($_category->getName() ?: "") : "";
+		$outputArray['page_name'] = $page->getProduct() ? ($page->getProduct()->getName() ?: "") : "";
 		$outputArray['page_type'] = "product";
 		
 		// THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)

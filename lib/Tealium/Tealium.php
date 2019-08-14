@@ -40,7 +40,7 @@ class Tealium {
 		if ($objectOrKey instanceof Closure) {
 			$updatedUdo = $objectOrKey();
 		} elseif (is_array ( $objectOrKey )) {
-			$updatedUdo = $objectOrKey();
+			$updatedUdo = $objectOrKey;
 		} else {
 			$updatedUdo = "{}";
 		}
