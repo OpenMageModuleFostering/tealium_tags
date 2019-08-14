@@ -175,7 +175,7 @@ class TealiumData {
 		$outputArray['product_category'] = array();
 		$outputArray['product_quantity'] = $checkout_qtys ?: array();
 		$outputArray['product_unit_price'] = $checkout_prices ?: array();
-+		$outputArray['product_list_price'] = $checkout_original_prices ?: array();
+		$outputArray['product_list_price'] = $checkout_original_prices ?: array();
 
 		$outputArray['product_price'] = $outputArray['product_unit_price'];
 		$outputArray['product_original_price'] = $outputArray['product_list_price'];
