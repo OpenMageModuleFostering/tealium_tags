@@ -125,6 +125,9 @@ class TealiumData {
 			$outputArray['product_list_price'] = array();
 		}
 
+		$outputArray['product_price'] = $outputArray['product_unit_price'];
+		$outputArray['product_original_price'] = $outputArray['product_list_price'];
+
 		if ( Mage::registry('current_category') ){
 			if ( Mage::registry('current_category')->getName() ){
 				$outputArray['product_category'] = array(Mage::registry('current_category')->getName());
@@ -170,6 +173,9 @@ class TealiumData {
 		$outputArray['product_quantity'] = $checkout_qtys ?: array();
 		$outputArray['product_unit_price'] = array();
 		$outputArray['product_list_price'] = $checkout_prices ?: array();
+
+		$outputArray['product_price'] = $outputArray['product_unit_price'];
+		$outputArray['product_original_price'] = $outputArray['product_list_price'];
 		
 		return $outputArray;
 	}
@@ -177,6 +183,14 @@ class TealiumData {
 	public function getOrderConfirmation(){
 		$store = TealiumData::$store;
 		$page = TealiumData::$page;
+		
+		if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+			$customer       = Mage::getSingleton('customer/session')->getCustomer();
+			$customer_id    = $customer->getEntityId();
+			$customer_email = $customer->getEmail();
+			$groupId        = $customer->getGroupId();
+			$customer_type  = Mage::getModel('customer/group')->load($groupId)->getCode();
+		}
 		
 		if (Mage::getModel('sales/order')) {
 			$order = Mage::getModel('sales/order')->loadByIncrementId($page->getOrderId());
@@ -209,8 +223,10 @@ class TealiumData {
 		
 		$outputArray = array();
 
-		$outputArray['site_region'] = Mage::app()->getLocale()->getLocaleCode() ?: "";
-		$outputArray['site_currency'] = $store->getCurrentCurrencyCode() ?: "";
+		$outputArray['site_region'] =  Mage::app()->getLocale()->getLocaleCode() ?: "";
+        $outputArray['site_currency'] =  $store->getCurrentCurrencyCode() ?: "";
+        $outputArray['page_name'] =  "cart success";   
+        $outputArray['page_type'] =  "cart";
 		$outputArray['order_id'] = $order->getIncrementId() ?: "";
 		$outputArray['order_discount'] = number_format($order->getDiscountAmount(), 2, ".", "") ?: "";
 		$outputArray['order_subtotal'] = number_format($order->getSubtotal(), 2, ".", "") ?: "";
@@ -219,6 +235,7 @@ class TealiumData {
 		$outputArray['order_payment_type'] = $order->getPayment() ? $order->getPayment()->getMethodInstance()->getTitle() : 'unknown';
 		$outputArray['order_total'] = number_format($order->getGrandTotal(), 2, ".", "") ?: "";
 		$outputArray['order_currency'] = $order->getOrderCurrencyCode() ?: "";
+		$outputArray['customer_id'] = $customer_id ?: "";
 		$outputArray['customer_email'] = $order->getCustomerEmail() ?: "";
 		$outputArray['product_id'] = $ids ?: array();
 		$outputArray['product_sku'] = $skus ?: array();
@@ -227,6 +244,8 @@ class TealiumData {
 		$outputArray['product_category'] = array();
 		$outputArray['product_unit_price'] = array();
 		$outputArray['product_list_price'] = $prices ?: array();
+		$outputArray['product_price'] = $outputArray['product_unit_price'];
+		$outputArray['product_original_price'] = $outputArray['product_list_price'];
 		$outputArray['product_quantity'] = $qtys ?: array();
 		$outputArray['product_discount'] = $discounts ?: array();
 		$outputArray['product_discounts'] = $discount_quantity ?: array();
