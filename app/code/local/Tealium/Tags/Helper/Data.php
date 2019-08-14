@@ -2,7 +2,7 @@
 
 class Tealium_Tags_Helper_Data extends Mage_Core_Helper_Abstract {
 	
-	private static $tealium;
+	private $tealium;
 	
 	public function init($store, $page = array()) {
         require_once(Mage::getBaseDir('lib') . '/Tealium/Tealium.php');

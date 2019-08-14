@@ -30,30 +30,30 @@ class Tealium implements TealiumInterface
 		public function __construct($accountInit = false, $profileInit = false, $targetInit = false, $pageType = "Home", $data = array(
 )) {
 				$this->access = array(
-						account => array(
-								type => "string",
-								read => true,
-								write => false
+						'account' => array(
+								'type' => "string",
+								'read' => true,
+								'write' => false
 						) ,
-						profile => array(
-								type => "string",
-								read => true,
-								write => false
+						'profile' => array(
+								'type' => "string",
+								'read' => true,
+								'write' => false
 						) ,
-						target => array(
-								type => "string",
-								read => true,
-								write => false
+						'target' => array(
+								'type' => "string",
+								'read' => true,
+								'write' => false
 						) ,
-						udo => array(
-								type => "array",
-								read => true,
-								write => false
-						),
-						access => array(
-								type => "array",
-								read => false,
-								write => false
+						'udo' => array(
+								'type' => "array",
+								'read' => true,
+								'write' => false
+						) ,
+						'access' => array(
+								'type' => "array",
+								'read' => false,
+								'write' => false
 						)
 				);
 				require 'TealiumInit.php';
@@ -63,7 +63,7 @@ class Tealium implements TealiumInterface
 				$this->profile = $profileInit;
 				$this->target = $targetInit;
 				$this->udo = $this->udoElements[$pageType] ? : ($pageType == null ? $pageType : array(
-						page_type => $pageType
+						'page_type' => $pageType
 				));
 		}
 		public function __toString() {
@@ -136,7 +136,7 @@ class Tealium implements TealiumInterface
 		}
 		public function pageType($pageType = "Home") {
 				$this->udo = $this->udoElements[$pageType] ? : array(
-						page_type => $pageType
+						'page_type' => $pageType
 				);
 		}
 		public function render($type = null) {
@@ -254,3 +254,4 @@ if (!function_exists('json_encode')) {
 // ***********************************************************************************************************
 
 ?>
+

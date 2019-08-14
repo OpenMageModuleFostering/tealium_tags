@@ -94,7 +94,7 @@ if (Mage::getModel('sales/order')) {
 										"amount"	=>$amount,
 										"type"		=>$type);
         }
-        $discount_quantity[] = array("product_id" 		=> $item->getProductId(),
+        $discount_quantity[] = array("product_id" => $item->getProductId(),
 									 "total_discount"	=> $discount,
 									 "discounts"		=> $discount_object);
         
@@ -103,79 +103,79 @@ if (Mage::getModel('sales/order')) {
 //**************************************************************************************************
 
 $udoElements = array(
-    Home => array(
-        site_region 	=> Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk"
-        site_currency 	=> $store->getCurrentCurrencyCode() ?: "", //"GBP"
-        page_name 		=> $page->getLayout()->getBlock('head')->getTitle() ?: "", //"Home" 
-        page_type 		=> $page->getTealiumType() ?: "" //"home"
+    'Home' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk"
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP"
+        'page_name' => $page->getLayout()->getBlock('head')->getTitle() ?: "", //"Home" 
+        'page_type' => $page->getTealiumType() ?: "" //"home"
     ),
-    Search => array(
-        site_region 	=> Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk"
-        site_currency 	=> $store->getCurrentCurrencyCode() ?: "", //"GBP" 
-        page_name 		=> "search results", //"results" 
-        page_type 		=> "search", //"search"
-        search_results 	=> $page->getResultCount() ?: "", //"234"
-        search_keyword 	=> $page->helper('catalogsearch')->getEscapedQueryText() ?: "" //"shorts"
+    'Search' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk"
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP" 
+        'page_name' => "search results", //"results" 
+        'page_type' => "search", //"search"
+        'search_results' => $page->getResultCount() ?: "", //"234"
+        'search_keyword' => $page->helper('catalogsearch')->getEscapedQueryText() ?: "" //"shorts"
     ),
-    Category => array(
-        site_region 			=> Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        site_currency 			=> $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        page_name 				=> $_category ? ($_category->getName() ?: "") : "", //"shorts", 
-        page_type 				=> "category", //"category",
-        page_section_name 		=> $section ?: "", //"Men's",
-        page_category_name 		=> $category ?: "", //"Clothing",
-        page_subcategory_name 	=> $subcategory ?: "" //"Shorts"
+    'Category' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
+        'page_name' => $_category ? ($_category->getName() ?: "") : "", //"shorts", 
+        'page_type' => "category", //"category",
+        'page_section_name' => $section ?: "", //"Men's",
+        'page_category_name' => $category ?: "", //"Clothing",
+        'page_subcategory_name' => $subcategory ?: "" //"Shorts"
     ),
-    ProductPage => array(
-        site_region 			=> Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        site_currency 			=> $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        page_name 				=> $page->getProduct() ? ($page->getProduct()->getName() ?: "") : "", //"Dr. Denim Chase Check Cargo Short", 
-        page_type 				=> "product", //"product",
-        page_section_name 		=> $STRING ?: "", //"Men's",
-        page_category_name 		=> $STRING ?: "", //"Clothing",
-        page_subcategory_name 	=> $STRING ?: "", //"Shorts",
+    'ProductPage' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
+        'page_name' => $page->getProduct() ? ($page->getProduct()->getName() ?: "") : "", //"Dr. Denim Chase Check Cargo Short", 
+        'page_type' => "product", //"product",
+        'page_section_name' => $STRING ?: "", //"Men's",
+        'page_category_name' => $STRING ?: "", //"Clothing",
+        'page_subcategory_name' => $STRING ?: "", //"Shorts",
         // THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
-        product_id => $page->getProduct() ? (array(
+        'product_id' => $page->getProduct() ? (array(
             $page->getProduct()->getId()
         ) ?: array(
             ""
         )) : array(
             ""
         ), //array("5225415241111"),
-        product_sku => $page->getProduct() ? (array(
+        'product_sku' => $page->getProduct() ? (array(
             $page->getProduct()->getSku()
         ) ?: array(
             ""
         )) : array(
             ""
         ), //array("42526"),
-        product_name => $page->getProduct() ? (array(
+        'product_name' => $page->getProduct() ? (array(
             $page->getProduct()->getName()
         ) ?: array(
             ""
         )) : array(
             ""
         ), //array("Dr. Denim Chase Check Cargo Short"),
-        product_brand => $page->getProduct() ? (array(
+        'product_brand' => $page->getProduct() ? (array(
             $page->getProduct()->getBrand()
         ) ?: array(
             ""
         )) : array(
             ""
         ), //array("Dr. Denim"),
-        product_category => array(
+        'product_category' => array(
             Mage::registry('current_category') ? Mage::registry('current_category')->getName() : 'no_category'
         ) ?: array(
             ""
         ), //array("Shorts"),
-        product_unit_price => $page->getProduct() ? (array(
+        'product_unit_price' => $page->getProduct() ? (array(
             number_format($page->getProduct()->getSpecialPrice(), 2)
         ) ?: array(
             ""
         )) : array(
             ""
         ), //array("11.99"),
-        product_list_price => $page->getProduct() ? (array(
+        'product_list_price' => $page->getProduct() ? (array(
             number_format($page->getProduct()->getPrice(), 2)
         ) ?: array(
             ""
@@ -183,57 +183,58 @@ $udoElements = array(
             ""
         ) //array("59.00")
     ),
-    Cart => array(
-        site_region 		=> Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        site_currency 		=> $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        page_name 			=> $page->getLayout()->getBlock('head')->getTitle() ?: "", //"cart", 
-        page_type 			=> "checkout", //"checkout",
+    'Cart' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
+        'page_name' => $page->getLayout()->getBlock('head')->getTitle() ?: "", //"cart", 
+        'page_type' => "checkout", //"checkout",
         // THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
-        product_id 			=> $checkout_ids ?: array(), //array("5225415241111","5421423520051"),
-        product_sku 		=> $checkout_skus ?: array(), //array("42526","24672"),
-        product_name 		=> $checkout_names ?: array(), //array("Dr. Denim Chase Check Cargo Short","Renewal Denim Shirt"),
-        product_brand 		=> $ARRAY ?: array(), //array("Dr. Denim",""),
-        product_category 	=> $ARRAY ?: array(), //array("Shorts","Shirts"),
-        product_quantity 	=> $checkout_qtys ?: array(), //array("1","1"),
-        product_unit_price 	=> $ARRAY ?: array(), //array("1//array("11.99","37.00"),
-        product_list_price 	=> $checkout_prices ?: array() //array("59.00","")
+        'product_id' => $checkout_ids ?: array(), //array("5225415241111","5421423520051"),
+        'product_sku' => $checkout_skus ?: array(), //array("42526","24672"),
+        'product_name' => $checkout_names ?: array(), //array("Dr. Denim Chase Check Cargo Short","Renewal Denim Shirt"),
+        'product_brand' => $ARRAY ?: array(), //array("Dr. Denim",""),
+        'product_category' => $ARRAY ?: array(), //array("Shorts","Shirts"),
+        'product_quantity' => $checkout_qtys ?: array(), //array("1","1"),
+        'product_unit_price' => $ARRAY ?: array(), //array("1//array("11.99","37.00"),
+        'product_list_price' => $checkout_prices ?: array() //array("59.00","")
     ),
-    Confirmation => array(
-        site_region => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
-        site_currency => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
-        page_name 			=> "cart success", //"confirmation",    
-        page_type 			=> "cart", //"checkout",
-        order_id 			=> $order->getIncrementId() ?: "", //"12345678",
-        order_discount 		=> number_format($order->getDiscountAmount(), 2, ".", "") ?: "", //"0.00",
-        order_subtotal 		=> number_format($order->getSubtotal(), 2, ".", "") ?: "", //"70.99",
-        order_shipping 		=> number_format($order->getShippingAmount(), 2, ".", "") ?: "", //"10.00",
-        order_tax 			=> number_format($order->getTaxAmount(), 2, ".", "") ?: "", //"5.00",
-        order_payment_type 	=> $order->getPayment() ? $order->getPayment()->getMethodInstance()->getTitle() : 'unknown', //"visa",
-        order_total 		=> number_format($order->getGrandTotal(), 2, ".", "") ?: "", //"85.99",
-        order_currency 		=> $order->getOrderCurrencyCode() ?: "", //"gbp",
-        customer_id 		=> $customer_id ?: "", //"12345678",
-        customer_email 		=> $order->getCustomerEmail() ?: "", //"customer@email.com"
+    'Confirmation' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "", //"uk",
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "", //"GBP", 
+        'page_name' => "cart success", //"confirmation",    
+        'page_type' => "cart", //"checkout",
+        'order_id' => $order->getIncrementId() ?: "", //"12345678",
+        'order_discount' => number_format($order->getDiscountAmount(), 2, ".", "") ?: "", //"0.00",
+        'order_subtotal' => number_format($order->getSubtotal(), 2, ".", "") ?: "", //"70.99",
+        'order_shipping' => number_format($order->getShippingAmount(), 2, ".", "") ?: "", //"10.00",
+        'order_tax' => number_format($order->getTaxAmount(), 2, ".", "") ?: "", //"5.00",
+        'order_payment_type' => $order->getPayment() ? $order->getPayment()->getMethodInstance()->getTitle() : 'unknown', //"visa",
+        'order_total' => number_format($order->getGrandTotal(), 2, ".", "") ?: "", //"85.99",
+        'order_currency' => $order->getOrderCurrencyCode() ?: "", //"gbp",
+        'customer_id' => $customer_id ?: "", //"12345678",
+        'customer_email' => $order->getCustomerEmail() ?: "", //"customer@email.com"
         // THE FOLLOWING NEEDS TO BE MATCHED ARRAYS (SAME NUMBER OF ELEMENTS)
-        product_id 			=> $ids ?: array(), //array("5225415241111","5421423520051"),
-        product_sku 		=> $skus ?: array(), //array("42526","24672"),
-        product_name 		=> $names ?: array(), //array("Dr. Denim Chase Check Cargo Short","Renewal Denim Shirt"),
-        product_brand 		=> $ARRAY ?: array(), //array("Dr. Denim",""),
-        product_category 	=> $ARRAY ?: array(), //array("Shorts","Shirts"),
-        product_unit_price 	=> $ARRAY ?: array(), //array("11.99","37.00"),
-        product_list_price 	=> $prices ?: array(), //array("59.00",""),
-        product_quantity 	=> $qtys ?: array(), //array("1","1"),
-        product_discount 	=> $discounts ?: array(), //array("0.00","0.00"),
-        product_discounts 	=> $discount_quantity ?: array()
+        'product_id' => $ids ?: array(), //array("5225415241111","5421423520051"),
+        'product_sku' => $skus ?: array(), //array("42526","24672"),
+        'product_name' => $names ?: array(), //array("Dr. Denim Chase Check Cargo Short","Renewal Denim Shirt"),
+        'product_brand' => $ARRAY ?: array(), //array("Dr. Denim",""),
+        'product_category' => $ARRAY ?: array(), //array("Shorts","Shirts"),
+        'product_unit_price' => $ARRAY ?: array(), //array("11.99","37.00"),
+        'product_list_price' => $prices ?: array(), //array("59.00",""),
+        'product_quantity' => $qtys ?: array(), //array("1","1"),
+        'product_discount' => $discounts ?: array(), //array("0.00","0.00"),
+        'product_discounts' => $discount_quantity ?: array()
     ),
-    Customer => array(
-        site_region 		=> Mage::app()->getLocale()->getLocaleCode() ?: "",
-        site_currency 		=> $store->getCurrentCurrencyCode() ?: "",
-        page_name 			=> $page->getLayout()->getBlock('head')->getTitle() ?: "",
-        page_type 			=> $page->getTealiumType() ?: "",
-        customer_id 		=> $customer_id ?: "",
-        customer_email 		=> $customer_email ?: "",
-        customer_type 		=> $customer_type ?: ""
+    'Customer' => array(
+        'site_region' => Mage::app()->getLocale()->getLocaleCode() ?: "",
+        'site_currency' => $store->getCurrentCurrencyCode() ?: "",
+        'page_name' => $page->getLayout()->getBlock('head')->getTitle() ?: "",
+        'page_type' => $page->getTealiumType() ?: "",
+        'customer_id' => $customer_id ?: "",
+        'customer_email' => $customer_email ?: "",
+        'customer_type' => $customer_type ?: ""
     )
 );
 
 ?> 
+

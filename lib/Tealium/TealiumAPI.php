@@ -6,10 +6,10 @@ include 'Tealium.php';
 // as long as "help => true" is set, "help => false" will only return "action not found"
 
 $actions = array(
-		render => true,
-		tag => true,
-		udo => true,
-		help => true
+		'render' => true,
+		'tag' => true,
+		'udo' => true,
+		'help' => true
 ); // setting any of these to false will disable that action
 
 $action = ($_REQUEST['action'] && preg_match('/[.\-\w\d]+/',$_REQUEST['action'])) ? $_REQUEST['action'] : "help";
