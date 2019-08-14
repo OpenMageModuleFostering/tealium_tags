@@ -32,7 +32,7 @@ foreach($order->getAllVisibleItems() as $item) {
     	$quantity = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountQty(),0);
     	$amount = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountAmount(),2);
     	$type = Mage::getModel('salesrule/rule')->load($rule)->getSimpleAction();
-        $discount_object[] = "{\"rule\":\"$rule\",\"quantity\":\"$quantity\",\"amount\":\"$amount\",\"$type\"}";
+        $discount_object[] = "{\"rule\":\"$rule\",\"quantity\":\"$quantity\",\"amount\":\"$amount\",\"type\":\"$type\"}";
     }
 	$discount_quantity[] = "{\"product_id\":\"" . $item->getProductId() . 
 		"\",\"total_discount\":\"" . $discount . 
@@ -49,7 +49,7 @@ foreach($order->getAllVisibleItems() as $item) {
         site_currency: "<?php echo $store->getCurrentCurrencyCode(); ?>",
         page_name: "cart success",
         page_type: "cart",
-        product_discount: ["<?php echo implode('","', $discounts) ?>"];
+        product_discount: ["<?php echo implode('","', $discounts) ?>"],
         product_discounts: [<?php echo implode(",", $discount_quantity) ?>],
         product_id: ["<?php echo implode('","', $ids) ?>"],
         product_sku: ["<?php echo implode('","', $skus) ?>"],
