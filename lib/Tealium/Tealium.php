@@ -1,220 +1,224 @@
-<?php 
+<?php
 
-class Tealium {
-	
-	private $account; 
-	private $profile; 
-	private $target;
-	private $udo;
-	private $udoElements;
-	private $customUdo;
-	
-	public function __construct( $accountInit = false, 
-								 $profileInit = false, 
-								 $targetInit = false, 
-								 $pageType = "Home", 
-								 &$data = array()) {
-		
-		require_once 'TealiumInit.php';
+class Tealium
+{
+    // Declare related properties and define constructor
+    private $account; // account name
+    private $profile; // profile name
+    private $target;
+    private $udo; // object (assoc array) of udo variables (key/val pairs)
+    private $udoElements;
+    private $customUdo;
 
-		$this->udoElements = $udoElements;
-		$this->account = $accountInit;
-		$this->profile = $profileInit;
-		$this->target = $targetInit;
-		if( !($this->udo = $this->udoElements[$pageType]) && $pageType != null ){
-			$this->udo = array( 'page_type' => $pageType );
-		}
-	}
-	
-	public function updateUdo($objectOrKey = "", $value = "") {
-		
-		$udoObject = $this->udo;
-		if ($udoObject instanceof Closure) {
-			$udo = $udoObject();
-		} elseif (is_array ( $udoObject )) {
-			$udo = $udoObject;
-		} else {
-			$udo = "{}";
-		}
-		
-		if ($objectOrKey instanceof Closure) {
-			$updatedUdo = $objectOrKey();
-		} elseif (is_array ( $objectOrKey )) {
-			$updatedUdo = $objectOrKey;
-		} else {
-			$updatedUdo = "{}";
-		}
+    public function __construct(
+        $accountInit = false,
+        $profileInit = false,
+        $targetInit = false,
+        $pageType = "Home",
+        &$data = array()
+    ) {
+        require_once 'TealiumInit.php';
 
-		if ( is_array( $updatedUdo ) ) {
-			foreach ( $updatedUdo as $objectKey => $objectValue ) {
-				$udo[$objectKey] = $objectValue;
-			}
-		} elseif ($objectOrKey != "") {
-			$udo[$objectOrKey] = $value;
-		}
-		
-		$this->udo = $udo;
-		
-		return $this->udo;
-	}
-	
-	public function setCustomUdo($udo){
-		$this->customUdo = $udo;
-	}
-	
-	public function pageType($pageType = "Home") {
-		if( !($this->udo = $this->udoElements[$pageType]) && $pageType != null ){
-			$this->udo = array( 'page_type' => $pageType );
-		}
-	}
-	public function render($type = null, $external = false, $sync = "sync") {
-		
-		if ( !(isset($_REQUEST["tealium_api"]) && $_REQUEST["tealium_api"] == "true") && $external) {
-			$type = "udo";
-			$is_async = ($sync == "sync") ? "" : "async";
-			$udo = "<script type=\"text/javascript\" src=\"";
-			$udo .= $_SERVER["REQUEST_URI"];
-			if ($_SERVER["QUERY_STRING"]){
-				$udo .= "&";
-			}
-			else {
-				$udo .= "?";
-			}
-			$udo .= "tealium_api=true\" $is_async></script>";
-		} 
-		else {
-			if (isset($this->customUdo)){
-				$this->updateUdo($this->customUdo);
-			}
-			$udoObject = $this->udo;
-			if ($udoObject instanceof Closure) {
-				$udoJson = json_encode ( $udoObject() );
-			} elseif (is_array ( $udoObject )) {
-				$udoJson = json_encode ( $udoObject );
-			} else {
-				$udoJson = "{}";
-			}
-			$udoJs = "utag_data = $udoJson;";
+        $this->udoElements = $udoElements;
+        $this->account = $accountInit;
+        $this->profile = $profileInit;
+        $this->target = $targetInit;
+        
+        if (
+            !($this->udo = $this->udoElements[$pageType])
+            && $pageType != null
+        ) {
+            $this->udo = array('page_type' => $pageType);
+        }
+    }
 
-			$udo = <<<EOD
+    // give an object of key value pairs to update in the udo,
+    // or provide a key string and value string of a single udo var to update
+    public function updateUdo($objectOrKey = "", $value = "")
+    {
+        // get udo and put in local scope as "$udoObject"
+        $udoObject = $this->udo;
+        
+        // set "$udo" depending on form of "$udoObject"
+        if ($udoObject instanceof Closure) {
+            $udo = $udoObject();
+        } elseif (is_array($udoObject)) {
+            $udo = $udoObject;
+        } else {
+            $udo = "{}";
+        }
+
+        // "$updatedUdo" is an object of key/val pairs of vars to be updated
+        // in the udo. It describes just the modifications to the current udo
+        // so that it can be updated. (could probably be better named)
+        if ($objectOrKey instanceof Closure) {
+            $updatedUdo = $objectOrKey();
+        } elseif (is_array($objectOrKey)) {
+            $updatedUdo = $objectOrKey;
+        } else {
+            // in string form $updateUdo indicates to use $objectOrKey
+            // as a key/val pair
+            $updatedUdo = "{}";
+        }
+
+        // if $updatedUdo is an assoc array, iterate through its key/val
+        // pairs and update the udo
+        if (is_array($updatedUdo)) {
+            foreach ($updatedUdo as $objectKey => $objectValue) {
+                $udo[$objectKey] = $objectValue;
+            }
+        } elseif ($objectOrKey != "") {
+            // else use function params as a key/val to update
+            $udo[$objectOrKey] = $value;
+        }
+
+        // set and return the updated udo
+        $this->udo = $udo;
+
+        return $this->udo;
+    }
+
+    // take a new udo and replace the old one
+    public function setCustomUdo($udo)
+    {
+        $this->customUdo = $udo;
+    }
+
+    // set a new page type
+    public function pageType($pageType = "Home")
+    {
+        $this->udo = $this->udoElements[$pageType];
+        if (!$this->udo && $pageType != null) {
+            $this->udo = array('page_type' => $pageType);
+        }
+    }
+
+    public function render($type = null, $external = false, $sync = "sync")
+    {
+        // check if the tealium api is being used and render just the data layer
+        if (
+            !(
+                isset($_REQUEST["tealium_api"])
+                && $_REQUEST["tealium_api"] == "true"
+            )
+            && $external
+        ) {
+            // not using the api, and the script is an external script
+            // instead of setting utag_data with a udo object, include
+            // the external script instead
+            $type = "udo";
+            $is_async = ($sync == "sync") ? "" : "async";
+            $udo = "<script type=\"text/javascript\" src=\"";
+            $udo .= $_SERVER["REQUEST_URI"];
+            
+            if ($_SERVER["QUERY_STRING"]) {
+                // append more query params with '&' if query params exist
+                $udo .= "&";
+            } else {
+                // else start query params with a '?'
+                $udo .= "?";
+            }
+            
+            // append the "tealium_api=true" query param to the url
+            $udo .= "tealium_api=true\" $is_async></script>";
+        } else {
+            // Either using the api, the udo is not an external script, or both.
+            // Therefore the udo object must be generated as javascript code.
+            
+            // include any customizations
+            if (isset($this->customUdo)) {
+                $this->updateUdo($this->customUdo);
+            }
+            
+            $udoObject = $this->udo;
+            
+            // determine the udo obj's type and convert to JSON
+            if ($udoObject instanceof Closure) {
+                // pretty print in versions of php that support it
+                if(defined('JSON_PRETTY_PRINT')) {
+                    $udoJson = json_encode($udoObject(), JSON_PRETTY_PRINT);
+                } else {
+                    $udoJson = json_encode($udoObject());
+                }
+            } elseif (is_array($udoObject)) {
+                // pretty print in versions of php that support it
+                if(defined('JSON_PRETTY_PRINT')) {
+                    $udoJson = json_encode($udoObject, JSON_PRETTY_PRINT);
+                } else {
+                    $udoJson = json_encode($udoObject);
+                }
+            } else {
+                $udoJson = "{}";
+            }
+            
+            // create the javascript for utag_data
+            $udoJs = "var utag_data = $udoJson;";
+
+            // create the entire script tag to render for utag_data
+            $udo = <<<EOD
 <!-- Tealium Universal Data Object / Data Layer -->
 <script type="text/javascript">
-    $udoJs
+$udoJs
 </script>
 <!-- ****************************************** -->
 EOD;
-		}
-		
-		// Render Tealium tag in javaScript
-		$insert_tag = <<<EOD
-    (function(a,b,c,d){
-        a='//tags.tiqcdn.com/utag/$this->account/$this->profile/$this->target/utag.js';
-        b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d. 
-        async=true;
-        a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
-        })();
+        }
+
+        // Render Tealium tag in javaScript
+        $insert_tag = <<<EOD
+(function(a,b,c,d){
+    a='//tags.tiqcdn.com/utag/$this->account/$this->profile/$this->target/utag.js';
+    b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c; 
+    d.async=true;
+    a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+})();
 EOD;
-		$tag = <<<EOD
+        
+        // enclose the tealium tag js in a <script></script> tag
+        $tag = <<<EOD
 <!-- Async Load of Tealium utag.js library -->
 <script type="text/javascript">
-    $insert_tag
+$insert_tag
 </script>
 <!-- ************************************* -->
 EOD;
-		if (isset($_REQUEST["tealium_api"]) && $_REQUEST["tealium_api"] == "true") {
-			$tag = $insert_tag . "\n//TEALIUM_END\n";
-			$udo = "//TEALIUM_START\n" . $udoJs;
-		}
-		
-		// Determine what code to return
-		if ($this->account && $this->profile && $this->target) {
-			if ($type == "tag") {
-				$renderedCode = $tag;
-			} elseif ($type == "udo") {
-				$renderedCode = $udo;
-			} elseif ($type == "json") {
-				$renderedCode = $udoJson;
-			} else {
-				$renderedCode = $udo . "\n" . $tag;
-			}
-		} else {
-			if ($this->udo != null) {
-				$renderedCode = $udo;
-			} else {
-				// Render instructions if Tealium Object was not used correctly
-				$renderedCode = <<<EOD
+        
+        // if using the tealium_api, return a page with only the javascript
+        if (
+            isset($_REQUEST["tealium_api"])
+            && $_REQUEST["tealium_api"] == "true"
+        ) {
+            $tag = "\n\n" . $insert_tag . "\n//TEALIUM_END\n";
+            $udo = "//TEALIUM_START\n" . "\n" . $udoJs;
+        }
+
+        // Determine what code to return
+        if ($this->account && $this->profile && $this->target) {
+            if ($type == "tag") {
+                $renderedCode = $tag;
+            } elseif ($type == "udo") {
+                // starts with "var utag_data = " followed by json
+                $renderedCode = $udo;
+            } elseif ($type == "json") {
+                // just the json object
+                $renderedCode = $udoJson;
+            } else {
+                $renderedCode = $udo . "\n" . $tag;
+            }
+        } else {
+            if ($this->udo != null) {
+                $renderedCode = $udo;
+            } else {
+                // Render instructions if Tealium Object was not used correctly
+                $renderedCode = <<<EOD
 <!-- Tealium Universal Data Object / Data Layer -->
 <!-- Account, profile, or environment was not declared in 
     object Tealium(\$account, \$profile, \$target, \$pageType) -->
 EOD;
-			}
-		}
-		
-		return $renderedCode;
-	}
+            }
+        }
+
+        return $renderedCode;
+    }
+
 }
-
-// Open source alternative for json_encode for PHP < 5.4 ***********************************************
-if (! function_exists ( 'json_encode' )) {
-	function json_encode($a = false) {
-		if (is_null ( $a ))
-			return 'null';
-		if ($a === false)
-			return 'false';
-		if ($a === true)
-			return 'true';
-		if (is_scalar ( $a )) {
-			if (is_float ( $a )) {
-				// Always use "." for floats.
-				return floatval ( str_replace ( ",", ".", strval ( $a ) ) );
-			}
-			if (is_string ( $a )) {
-				static $jsonReplaces = array (
-						array (
-								"\\",
-								"/",
-								"\n",
-								"\t",
-								"\r",
-								"\b",
-								"\f",
-								'"' 
-						),
-						array (
-								'\\\\',
-								'\\/',
-								'\\n',
-								'\\t',
-								'\\r',
-								'\\b',
-								'\\f',
-								'\"' 
-						) 
-				);
-				return '"' . str_replace ( $jsonReplaces [0], $jsonReplaces [1], $a ) . '"';
-			} else
-				return $a;
-		}
-		$isList = true;
-		for($i = 0, reset ( $a ); $i < count ( $a ); $i ++, next ( $a )) {
-			if (key ( $a ) !== $i) {
-				$isList = false;
-				break;
-			}
-		}
-		$result = array ();
-		if ($isList) {
-			foreach ( $a as $v )
-				$result [] = json_encode ( $v );
-			return '[' . join ( ',', $result ) . ']';
-		} else {
-			foreach ( $a as $k => $v )
-				$result [] = json_encode ( $k ) . ':' . json_encode ( $v );
-			return '{' . join ( ',', $result ) . '}';
-		}
-	}
-}
-// ***********************************************************************************************************
-
-?>
-

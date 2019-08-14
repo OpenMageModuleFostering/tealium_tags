@@ -1,13 +1,13 @@
 {
     "name": "OpenMageModuleFostering/Tealium_Tags",
     "type": "magento-module",
-    "license": "OSL-v3.0",
+    "license": "Tealium-License-Agreement",
     "homepage": "",
-    "description": "Tealum tag management solution",
+    "description": "Tealium’s tag management makes it easy for marketers to deploy and manage their third-party vendor tags",
     "authors": [
     {
-        "name": "Patrick McWilliams",
-        "email": "patrick.mcwilliams@tealium.com"
+        "name": "Tealium Inc.",
+        "email": "tech-partners@tealium.com"
     }
 ],
     "suggest": {

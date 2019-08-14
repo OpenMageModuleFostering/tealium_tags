@@ -3,38 +3,51 @@
 $helper = Mage::helper('tealium_tags');
 $store = Mage::app()->getStore();
 
+// if Tealium extension is not enabled, return immediately to not render
 if (!$helper->isEnabled($store)) {
     return; // not enabled, no javascript inserted
 }
 
-$tealium = $helper->init($store, $this, "Cart")->
-addCustomDataFromSetup($store, "Cart")->
-getTealiumObject();
+// create a tealium object for the page
+$tealium = $helper->init($store, $this, "Cart")
+    ->addCustomDataFromSetup($store, "Cart")
+    ->getTealiumObject();
 
-if ($helper->getIsExternalScript($store)){
-	$syncType = "sync";
-	$externalScriptType = $helper->getExternalScriptType($store);
-	if ($externalScriptType == "sync" || $externalScriptType == "async"){
-		$syncType = $externalScriptType;
-	}
-	echo $tealium->render("full", true, $syncType);
-}
-else {
-	echo $tealium->render("udo");
+// load and use the external config if it's enabled, and render Tealium
+// JavaScript code to the page.
+if ($helper->getIsExternalScript($store)) {
+    $syncType = "sync";
+    $externalScriptType = $helper->getExternalScriptType($store);
+    if ($externalScriptType == "sync" || $externalScriptType == "async") {
+        $syncType = $externalScriptType;
+    }
+    echo $tealium->render("full", true, $syncType);
+} else {
+    echo $tealium->render("udo");
 }
 
+// Sometimes it's useful to send the entire udo to a server for diagnostics.
+// Render a tag in the form of an html <img> element that
+// will send the url encoded udo to a specified server if the feature is
+// enabled in the config.
 echo $helper->getDiagnosticTag($store);
+
+// get the udo as a json object
 $jsonUDO = $tealium->render("json");
 
 if (!$helper->enableOnePageCheckout($store)) {
     return; // not enabled, no javascript inserted
 }
 
+// The onepage checkout has other special udo requirements.
+// Render some JavaScript that on the content loaded DOM event
+// will set the udo.
 echo <<<EOD
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded',function(){
 	if(!!window.Checkout){
-		Checkout.prototype.namespaceOriginalGotoSection = Checkout.prototype.gotoSection;
+		Checkout.prototype.namespaceOriginalGotoSection =
+            Checkout.prototype.gotoSection;
 		Checkout.prototype.gotoSection = function(section,reloadProgressBlock) { 
 			utag.data=$jsonUDO;
 			utag.data["page_name"] = section;
@@ -46,26 +59,24 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 
-EOD
+EOD;
 
-
-?>
-<?php
 echo <<<EOD
 <script type="text/javascript"> 
 document.addEventListener('DOMContentLoaded',function(){
 	if (!!window.Review){
-EOD
-?>
-<?php
-echo "review = new Review('".$this->getUrl('checkout/onepage/saveOrder', array('form_key' => Mage::getSingleton('core/session')->getFormKey()))."', '".$this->getUrl('checkout/onepage/success')."', $('checkout-agreements'));";
-?>
+EOD;
 
-<?php
+echo "review = new Review('" .
+    $this->getUrl('checkout/onepage/saveOrder', array(
+        'form_key' => Mage::getSingleton('core/session')->getFormKey()
+    )) .
+    "', '" .
+    $this->getUrl('checkout/onepage/success') .
+    "', $('checkout-agreements'));";
+
 echo <<<EOD
 	}
 });
 </script> 
-EOD
-?>
-
+EOD;

@@ -1,6 +1,6 @@
 <layout version="0.1.0">
 
-   <!--
+    <!--
 
     Add specific blocks on all frontend pages
         catalog
@@ -11,8 +11,9 @@
         search
         (and remove the generic code)
     -->
-
+    
     <!-- Category Pages -->
+    
     <catalog_category_default>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -26,8 +27,12 @@
             <block type="catalog/category_view" name="tealium_category" as="tealium_category" template="tealium_tags/category.phtml" before="tealium_base" />
         </reference>
     </catalog_category_layered>
+    
+    <!-- /Category Pages -->
+
 
     <!-- Product Page -->
+    
     <catalog_product_view>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -41,8 +46,12 @@
             <block type="catalog/product_compare_list" name="tealium_catalog_product_compare_index" as="tealium_catalog_product_compare_index" template="tealium_tags/catalog_product_compare_index.phtml" before="tealium_base" />
         </reference>
     </catalog_product_compare_index>
+    
+    <!-- /Product Page -->
+
 
     <!-- SEO Sitemap -->
+    
     <catalog_seo_sitemap>
         <!-- Covered by layouts below -->
     </catalog_seo_sitemap>
@@ -94,17 +103,24 @@
             </block>
         </reference>
     </catalog_seo_searchterm_popular>
+    
+    <!-- /SEO Sitemap -->
+
 
     <!-- Send to friend -->
+    
     <sendfriend_product_send>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
             <block type="sendfriend/send" name="tealium_product_send" as="tealium_product_send" template="tealium_tags/product_send.phtml" before="tealium_base" />
         </reference>
     </sendfriend_product_send>
+    
+    <!-- /Send to friend -->
+
 
     <!-- Customer -->
-
+    
     <customer_account>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -116,9 +132,12 @@
             </block>
         </reference>
     </customer_account>
+    
+    <!-- /Customer -->
+
 
     <!-- CMS -->
-
+    
     <cms_page>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -130,8 +149,12 @@
             </block>
         </reference>
     </cms_page>
+    
+    <!-- /CMS -->
+
 
     <!-- Checkout/Cart steps/Success -->
+    
     <checkout_cart_index>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -152,28 +175,52 @@
             <block type="checkout/onepage_success" name="checkout_onepage_success" as="checkout_onepage_success" template="tealium_tags/checkout_success.phtml" before="tealium_base" />
         </reference>
     </checkout_onepage_success>
+    
+    <!-- /Checkout/Cart steps/Success -->
+
 
     <!-- Multi-shipping uses same template as above -->
+    
     <checkout_multishipping>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
             <block type="core/template" name="tealium_checkout_onepage" as="tealium_checkout_onepage" template="tealium_tags/checkout_onepage.phtml" before="tealium_base" />
         </reference>
     </checkout_multishipping>
+    
+    <!-- /Multi-shipping uses same template as above -->
 
 
     <!-- Search/Advanced Search -->
+    
     <catalogsearch_result_index>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
             <block type="catalogsearch/result" name="tealium_catalogsearch_result_index" as="tealium_catalogsearch_result_index" template="tealium_tags/catalogsearch_result_index.phtml" before="tealium_base">
 		    <block type="catalog/product_list" name="search_result_list" template="catalog/product/list.phtml">
-                    <action method="addColumnCountLayoutDepend"><layout>empty</layout><count>6</count></action>
-                    <action method="addColumnCountLayoutDepend"><layout>one_column</layout><count>5</count></action>
-                    <action method="addColumnCountLayoutDepend"><layout>two_columns_left</layout><count>4</count></action>
-                    <action method="addColumnCountLayoutDepend"><layout>two_columns_right</layout><count>4</count></action>
-                    <action method="addColumnCountLayoutDepend"><layout>three_columns</layout><count>3</count></action>
-                    <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
+                    <action method="addColumnCountLayoutDepend">
+                        <layout>empty</layout>
+                        <count>6</count>
+                    </action>
+                    <action method="addColumnCountLayoutDepend">
+                        <layout>one_column</layout>
+                        <count>5</count>
+                    </action>
+                    <action method="addColumnCountLayoutDepend">
+                        <layout>two_columns_left</layout>
+                        <count>4</count>
+                    </action>
+                    <action method="addColumnCountLayoutDepend">
+                        <layout>two_columns_right</layout>
+                        <count>4</count>
+                    </action>
+                    <action method="addColumnCountLayoutDepend">
+                        <layout>three_columns</layout>
+                        <count>3</count>
+                    </action>
+                    <action method="setToolbarBlockName">
+                        <name>product_list_toolbar</name>
+                    </action>
                 </block>
                 <action method="setListOrders"/>
                 <action method="setListModes"/>
@@ -195,6 +242,9 @@
             <block type="catalogsearch/term" name="tealium_catalogsearch_term_popular" as="tealium_catalogsearch_term_popular" template="tealium_tags/catalogsearch_term_popular.phtml" before="tealium_base" />
         </reference>
     </catalogsearch_term_popular>
+    
+    <!-- /Search/Advanced Search -->
+
 
     <!-- Tags -->
 
@@ -213,7 +263,9 @@
                     <block type="catalog/product_list_toolbar" name="product_list_toolbar" template="catalog/product/list/toolbar.phtml">
                         <block type="page/html_pager" name="product_list_toolbar_pager"/>
                     </block>
-                    <action method="setToolbarBlockName"><name>product_list_toolbar</name></action>
+                    <action method="setToolbarBlockName">
+                        <name>product_list_toolbar</name>
+                    </action>
                 </block>
                 <action method="setListOrders"/>
                 <action method="setListModes"/>
@@ -221,6 +273,9 @@
             </block>
         </reference>
     </tag_product_list>
+    
+    <!-- /Tags -->
+
 
     <!-- Guest Sales -->
 
@@ -239,36 +294,39 @@
             </block>
         </reference>
     </sales_guest_form>
+    
     <sales_guest_view>
-            <reference name="after_body_start">
-                <remove name="tealium_generic" />
-                <block type="core/template" name="tealium_guest" as="tealium_guest" template="tealium_tags/guest_sales.phtml" before="tealium_base">
-                    <action method="setData">
-                        <name>tealium_type</name>
-                        <value>sales guest view</value>
-                    </action>
-                    <action method="setData">
-                        <name>tealium_name</name>
-                        <value>Guest View order</value>
-                    </action>
-                </block>
-            </reference>
-        </sales_guest_view>
-       <sales_guest_invoice>
-            <reference name="after_body_start">
-                <remove name="tealium_generic" />
-                <block type="core/template" name="tealium_guest" as="tealium_guest" template="tealium_tags/guest_sales.phtml" before="tealium_base">
-                    <action method="setData">
-                        <name>tealium_type</name>
-                        <value>sales guest view invoice</value>
-                    </action>
-                    <action method="setData">
-                        <name>tealium_name</name>
-                        <value>Guest View Invoice</value>
-                    </action>
-                </block>
-            </reference>
-        </sales_guest_invoice>
+        <reference name="after_body_start">
+            <remove name="tealium_generic" />
+            <block type="core/template" name="tealium_guest" as="tealium_guest" template="tealium_tags/guest_sales.phtml" before="tealium_base">
+                <action method="setData">
+                    <name>tealium_type</name>
+                    <value>sales guest view</value>
+                </action>
+                <action method="setData">
+                    <name>tealium_name</name>
+                    <value>Guest View order</value>
+                </action>
+            </block>
+        </reference>
+    </sales_guest_view>
+    
+    <sales_guest_invoice>
+        <reference name="after_body_start">
+            <remove name="tealium_generic" />
+            <block type="core/template" name="tealium_guest" as="tealium_guest" template="tealium_tags/guest_sales.phtml" before="tealium_base">
+                <action method="setData">
+                    <name>tealium_type</name>
+                    <value>sales guest view invoice</value>
+                </action>
+                <action method="setData">
+                    <name>tealium_name</name>
+                    <value>Guest View Invoice</value>
+                </action>
+            </block>
+        </reference>
+    </sales_guest_invoice>
+    
     <sales_guest_shipment>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -284,6 +342,7 @@
             </block>
         </reference>
     </sales_guest_shipment>
+    
     <sales_guest_creditmemo>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -299,6 +358,7 @@
             </block>
         </reference>
     </sales_guest_creditmemo>
+    
     <sales_guest_reorder>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -330,6 +390,7 @@
             </block>
         </reference>
     </sales_guest_print>
+    
     <sales_guest_printinvoice>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -345,6 +406,7 @@
             </block>
         </reference>
     </sales_guest_printinvoice>
+    
     <sales_guest_printshipment>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -360,6 +422,7 @@
             </block>
         </reference>
     </sales_guest_printshipment>
+    
     <sales_guest_printcreditmemo>
         <reference name="after_body_start">
             <remove name="tealium_generic" />
@@ -375,15 +438,19 @@
             </block>
         </reference>
     </sales_guest_printcreditmemo>
-
+    
+    <!-- /Guest Sales -->
 
 
     <!-- Add base tealium script on all pages, and the generic script -->
+    
     <default>
         <reference name="after_body_start">
             <block type="core/template" name="tealium_base" as="tealium_base" template="tealium_tags/base.phtml" />
             <block type="core/template" name="tealium_generic" as="tealium_generic" template="tealium_tags/generic.phtml" before="tealium_base" />
         </reference>
     </default>
+    
+    <!-- /Add base tealium script on all pages, and the generic script -->
 	
 </layout>
