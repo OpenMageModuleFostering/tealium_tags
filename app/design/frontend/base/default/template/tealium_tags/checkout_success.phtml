@@ -33,7 +33,6 @@ foreach($order->getAllVisibleItems() as $item) {
     	$amount = number_format(Mage::getModel('salesrule/rule')->load($rule)->getDiscountAmount(),2);
     	$type = Mage::getModel('salesrule/rule')->load($rule)->getSimpleAction();
         $discount_object[] = "{\"rule\":\"$rule\",\"quantity\":\"$quantity\",\"amount\":\"$amount\",\"$type\"}";
-        echo "<!--"; echo print_r(Mage::getModel('salesrule/rule')->load($rule)->getData()); echo "-->";
     }
 	$discount_quantity[] = "{\"product_id\":\"" . $item->getProductId() . 
 		"\",\"total_discount\":\"" . $discount . 
