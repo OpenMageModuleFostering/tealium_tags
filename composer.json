@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Tealium_Tags",
+    "name": "OpenMageModuleFostering\/Tealium_Tags",
     "type": "magento-module",
     "license": "Tealium-License-Agreement",
     "homepage": "",
-    "description": "Tealium’s tag management makes it easy for marketers to deploy and manage their third-party vendor tags",
+    "description": "Tealium\u2019s tag management makes it easy for marketers to deploy and manage their third-party vendor tags",
     "authors": [
-    {
-        "name": "Tealium Inc.",
-        "email": "tech-partners@tealium.com"
-    }
-],
+        {
+            "name": "Tealium Inc.",
+            "email": "tech-partners@tealium.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
